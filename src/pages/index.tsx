@@ -2,9 +2,11 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { TestButton } from './TestButton'
+import handler from './api/hello'
+import { get } from './api/notion'
 
-const Home: NextPage = () => {
+const Home: NextPage = (props) => {
+  console.log(props)
   return (
     <div className={styles.container}>
       <Head>
@@ -17,8 +19,6 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
-
-        <TestButton />
 
         <p className={styles.description}>
           Get started by editing <code className={styles.code}>pages/index.tsx</code>
@@ -67,3 +67,9 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export async function getServerSideProps() {
+  await handler(undefined, {})
+  const test = await get()
+  return { props: test }
+}
