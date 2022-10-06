@@ -3,6 +3,7 @@ import {
   QueryDatabaseResponse,
   ListBlockChildrenResponse,
 } from '@notionhq/client/build/src/api-endpoints'
+import { BlockObject } from './notion/types'
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN })
 
@@ -47,12 +48,33 @@ export const getPageContents = async (): Promise<Response> => {
   }
 }
 
-const getBlocks = async (id: string): Promise<ListBlockChildrenResponse['results']> => {
-  try {
-    const result = await notion.blocks.children.list({ block_id: id, page_size: 50 })
-    return result.results
-  } catch (e) {
-    console.error(e)
-    return []
-  }
+const getBlocks = async (parentId: string): Promise<Array<BlockObject>> => {
+  const blocks: BlockObject[] = []
+  let cursor = null
+  do {
+    try {
+      const {
+        results,
+        next_cursor: nextCursor,
+        has_more: hasMore,
+      } = await notion.blocks.children.list({
+        block_id: parentId,
+      })
+      for (const block of results) {
+        if ('type' in block) {
+          if (block.has_children) {
+            const children = await getBlocks(block.id)
+            blocks.push({ ...block, children })
+          } else {
+            blocks.push({ ...block })
+          }
+        }
+      }
+      cursor = hasMore ? nextCursor : null
+    } catch (e) {
+      console.error(e)
+      break
+    }
+  } while (cursor !== null)
+  return blocks
 }
