@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import NoteCard from '../components/NoteCard'
-import { get } from './api/notion'
+import { getPageContents } from './api/notion'
 
 const Home: NextPage = (props) => {
   return (
@@ -13,6 +13,10 @@ const Home: NextPage = (props) => {
 export default Home
 
 export async function getServerSideProps() {
-  const test = await get()
-  return { props: test }
+  const result = await getPageContents()
+  if (result.success) {
+    return { props: result.page }
+  } else {
+    return { props: null }
+  }
 }
