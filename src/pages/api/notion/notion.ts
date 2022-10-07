@@ -1,10 +1,22 @@
 import { Client, isFullPage } from '@notionhq/client'
-import { renderPage, renderProperty } from './lib/render'
-import { BlockObject, PageObject } from './notion/types'
+import { renderPage, renderProperty } from '../lib/render'
+import { BlockObject, PageObject } from './types'
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN })
 
 const databaseId = process.env.NOTION_DATABASE_ID
+
+export async function GetDatabases() {
+  const response = await notion.search({
+    query: '',
+    filter: {
+      property: 'object',
+      value: 'database',
+    },
+  })
+
+  return response
+}
 
 export type Response =
   | {

@@ -65,7 +65,6 @@ export function renderProperty(content: PropertyObject): Array<string> {
             return ''
         }
       case 'title':
-        console.log(node)
         return md.plainText(node.title)
       case 'people':
         return `${node.people.length} users`
