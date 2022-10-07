@@ -1,27 +1,29 @@
 import * as React from 'react'
-import useSWR from 'swr'
+import useSWR, { Fetcher } from 'swr'
 
 import type { NextPage } from 'next'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 
 import NoteCard from '../components/NoteCard'
-import { getPageContents, Response } from './api/notion/notion'
+import { Response } from './api/notion/pages'
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json())
+const fetcher: Fetcher<Response, string> = (...args) => fetch(...args).then((res) => res.json())
 
-const Home: NextPage<Response> = (props) => {
-  const { data, error } = useSWR('/api/notion/databases', fetcher)
-  console.log(data)
+const Home: NextPage = () => {
+  const { data: databases } = useSWR<Response, undefined | null>('/api/notion/databases', fetcher)
+  console.log(databases)
+  const { data: page } = useSWR<Response, undefined | null>('/api/notion/pages', fetcher)
+  console.log(page)
 
   return (
     <Container maxWidth="sm">
       <Typography variant="h1">Reminder Note</Typography>
-      {props.success && (
+      {page?.success && (
         <NoteCard
-          body={props.body}
-          createdAt={props.page.created_time}
-          properties={props.properties}
+          body={page.body}
+          createdAt={page.page.created_time}
+          properties={page.properties}
         />
       )}
     </Container>
@@ -29,12 +31,3 @@ const Home: NextPage<Response> = (props) => {
 }
 
 export default Home
-
-export async function getServerSideProps() {
-  const result = await getPageContents()
-  if (result.success) {
-    return { props: result }
-  } else {
-    return { props: null }
-  }
-}
