@@ -1,19 +1,18 @@
 import { Client } from '@notionhq/client'
-import {
-  QueryDatabaseResponse,
-  ListBlockChildrenResponse,
-} from '@notionhq/client/build/src/api-endpoints'
+import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints'
+import { renderPage } from './lib/render'
 import { BlockObject } from './notion/types'
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN })
 
 const databaseId = process.env.NOTION_DATABASE_ID
 
-type Response =
+export type Response =
   | {
       success: true
       page: QueryDatabaseResponse['results'][number]
-      blocks: ListBlockChildrenResponse['results']
+      blocks: Array<BlockObject>
+      body: string
     }
   | {
       success: false
@@ -28,11 +27,13 @@ export const getPageContents = async (): Promise<Response> => {
       if (response.results.length > 0) {
         const page = response.results[0]
         const blocks = await getBlocks(page.id)
+        const body = renderPage(blocks)
 
         return {
           success: true,
           page,
           blocks,
+          body,
         }
       } else {
         return {

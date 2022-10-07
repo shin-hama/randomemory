@@ -3,12 +3,13 @@ import { format } from 'prettier'
 import { BlockObject } from '../notion/types'
 import * as md from './markdown'
 
-export function isNotNull<T>(value: T | null | undefined): value is T {
+function isNotNull<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
 
-export function renderPage(properties: Record<string, unknown>, content: BlockObject[]): string {
+export function renderPage(content: Array<BlockObject>): string {
   const body = content.map((block) => renderBlock(block)).join('')
+
   return format(body, {
     parser: 'markdown',
     printWidth: 80,
@@ -17,7 +18,7 @@ export function renderPage(properties: Record<string, unknown>, content: BlockOb
   })
 }
 
-export function renderBlock(block: BlockObject): string | null {
+function renderBlock(block: BlockObject): string | null {
   const stringify = (node: BlockObject, contents: string[]): string | null => {
     switch (node.type) {
       case 'heading_1':
