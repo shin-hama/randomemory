@@ -1,10 +1,98 @@
+import dayjs from 'dayjs'
 import { format } from 'prettier'
 
-import { BlockObject } from '../notion/types'
+import { BlockObject, PropertyObject } from '../notion/types'
 import * as md from './markdown'
 
 function isNotNull<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
+}
+
+function formatDate(date: string) {
+  const formatStr = 'YYYY/MM/DD HH:mm'
+  return dayjs(date).format(formatStr)
+}
+
+export function renderProperty(content: PropertyObject): Array<string> {
+  const stringify = (node: PropertyObject[string]): string | undefined | null => {
+    switch (node.type) {
+      case 'rich_text':
+        return md.plainText(node.rich_text)
+      case 'number':
+        return node.number?.toString() || ''
+      case 'select':
+        return node.select?.name || ''
+      case 'multi_select':
+        return node.multi_select.map((i) => i.name).join(', ')
+      case 'status':
+        return node.status?.name
+      case 'date': {
+        if (node.date) {
+          const start = formatDate(node.date.start)
+          if (node.date.end) {
+            return `${start} ~ ${formatDate(node.date.end)}`
+          } else {
+            return start
+          }
+        } else {
+          return
+        }
+      }
+      case 'formula':
+        switch (node.formula.type) {
+          case 'boolean':
+            return node.formula.boolean?.toString()
+          case 'date':
+            return node.formula.date ? stringify({ ...node.formula, id: '' }) : ''
+          case 'number':
+            return node.formula.number?.toString()
+          case 'string':
+            return node.formula.string
+          default:
+            throw Error(`Not implemented error: node.formula.type: ${node}`)
+        }
+      case 'relation':
+        return `${node.relation.length} relations`
+      case 'rollup':
+        switch (node.rollup.type) {
+          case 'array':
+            return node.rollup.array.map((n) => stringify({ ...n, id: '' })).join(',')
+          case 'date':
+            return node.rollup.date ? stringify({ ...node.rollup, id: '' }) : ''
+          case 'number':
+            return node.rollup.number?.toString()
+          default:
+            return ''
+        }
+      case 'title':
+        console.log(node)
+        return md.plainText(node.title)
+      case 'people':
+        return `${node.people.length} users`
+      case 'files':
+        return node.files.map((n) => n.name).join(',')
+      case 'checkbox':
+        return node.checkbox.toString()
+      case 'url':
+        return `[${node.url}](${node.url})`
+      case 'email':
+        return node.email
+      case 'phone_number':
+        return node.phone_number
+      case 'created_time':
+        return formatDate(node.created_time)
+      case 'created_by':
+        return node.created_by.id
+      case 'last_edited_time':
+        return formatDate(node.last_edited_time)
+      case 'last_edited_by':
+        return node.last_edited_by.id
+      default:
+        return ''
+    }
+  }
+
+  return Object.entries(content).map(([key, value]) => `${key}: ${stringify(value) || ''}`)
 }
 
 export function renderPage(content: Array<BlockObject>): string {

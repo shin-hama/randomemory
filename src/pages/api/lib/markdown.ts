@@ -125,6 +125,6 @@ function decorateText(text: RichText): string {
   return text.map(renderNode).join('')
 }
 
-function plainText(text: RichText): string {
+export function plainText(text: RichText): string {
   return text.map((node) => node.plain_text).join('')
 }
