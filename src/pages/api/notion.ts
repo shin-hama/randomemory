@@ -1,7 +1,6 @@
 import { Client, isFullPage } from '@notionhq/client'
-import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints'
 import { renderPage, renderProperty } from './lib/render'
-import { BlockObject } from './notion/types'
+import { BlockObject, PageObject } from './notion/types'
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN })
 
@@ -10,7 +9,7 @@ const databaseId = process.env.NOTION_DATABASE_ID
 export type Response =
   | {
       success: true
-      page: QueryDatabaseResponse['results'][number]
+      page: PageObject
       properties: Array<string>
       blocks: Array<BlockObject>
       body: string
@@ -27,16 +26,20 @@ export const getPageContents = async (): Promise<Response> => {
 
       if (response.results.length > 0) {
         const page = response.results[0]
-        const blocks = await getBlocks(page.id)
-        const properties = isFullPage(page) ? renderProperty(page.properties) : []
-        const body = renderPage(blocks)
+        if (isFullPage(page)) {
+          const blocks = await getBlocks(page.id)
+          const properties = isFullPage(page) ? renderProperty(page.properties) : []
+          const body = renderPage(blocks)
 
-        return {
-          success: true,
-          page,
-          blocks,
-          properties,
-          body,
+          return {
+            success: true,
+            page,
+            blocks,
+            properties,
+            body,
+          }
+        } else {
+          return { success: false }
         }
       } else {
         return {

@@ -4,6 +4,8 @@ import {
   RichTextItemResponse,
 } from '@notionhq/client/build/src/api-endpoints'
 
+export type PageObject = PageObjectResponse
+
 export type BlockObject = BlockObjectResponse & {
   children?: Array<BlockObject>
 }

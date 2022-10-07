@@ -1,15 +1,20 @@
 import type { NextPage } from 'next'
-import ReactMarkdown from 'react-markdown'
+import Typography from '@mui/material/Typography'
 
 import NoteCard from '../components/NoteCard'
 import { getPageContents, Response } from './api/notion'
 
 const Home: NextPage<Response> = (props) => {
-  console.log(props)
   return (
     <>
-      <NoteCard />
-      {props.success && <ReactMarkdown>{props.body}</ReactMarkdown>}
+      <Typography variant="h1">Reminder Note</Typography>
+      {props.success && (
+        <NoteCard
+          body={props.body}
+          createdAt={props.page.created_time}
+          properties={props.properties}
+        />
+      )}
     </>
   )
 }
