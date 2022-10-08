@@ -1,23 +1,18 @@
 import * as React from 'react'
-import useSWR, { Fetcher } from 'swr'
-
-import type { NextPage } from 'next'
-import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
+import type { NextPage } from 'next'
 
-import NoteCard from '../components/NoteCard'
 import { Response } from './api/notion/pages'
-
-const fetcher: Fetcher<Response, string> = (...args) => fetch(...args).then((res) => res.json())
+import Layout from '../components/Layout'
+import NoteCard from '../components/NoteCard'
+import { useFetch } from '../hooks/useFetch'
 
 const Home: NextPage = () => {
-  const { data: databases } = useSWR<Response, undefined | null>('/api/notion/databases', fetcher)
-  console.log(databases)
-  const { data: page } = useSWR<Response, undefined | null>('/api/notion/pages', fetcher)
+  const { data: page } = useFetch<Response>('/api/notion/pages')
   console.log(page)
 
   return (
-    <Container maxWidth="sm">
+    <Layout>
       <Typography variant="h1">Reminder Note</Typography>
       {page?.success && (
         <NoteCard
@@ -26,7 +21,7 @@ const Home: NextPage = () => {
           properties={page.properties}
         />
       )}
-    </Container>
+    </Layout>
   )
 }
 
