@@ -1,5 +1,4 @@
 import * as React from 'react'
-import Typography from '@mui/material/Typography'
 import type { NextPage } from 'next'
 
 import { Response } from './api/notion/pages'
@@ -13,7 +12,6 @@ const Home: NextPage = () => {
 
   return (
     <Layout>
-      <Typography variant="h1">Reminder Note</Typography>
       {page?.success && (
         <NoteCard
           body={page.body}
