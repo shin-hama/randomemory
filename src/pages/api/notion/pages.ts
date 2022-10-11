@@ -5,7 +5,8 @@ import { BlockObject, PageObject } from './types'
 import { notion } from './notion'
 import { isFullPage } from '@notionhq/client'
 
-const databaseId = process.env.NOTION_DATABASE_ID
+const pageIds = ['a', 'b', 'c', 'd', 'e', 'f']
+const pageId = process.env.NOTION_PAGE_ID
 
 export default async function pages(req: NextApiRequest, res: NextApiResponse) {
   const result = await getPageContents()
@@ -26,32 +27,26 @@ export type Response =
     }
 const getPageContents = async (): Promise<Response> => {
   try {
-    if (databaseId) {
-      const response = await notion.databases.query({
-        database_id: databaseId,
+    if (pageId) {
+      const id = pageIds[Math.floor(Math.random() * pageIds.length)]
+      const page = await notion.pages.retrieve({
+        page_id: pageId,
       })
 
-      if (response.results.length > 0) {
-        const page = response.results[0]
-        if (isFullPage(page)) {
-          const blocks = await getBlocks(page.id)
-          const properties = renderProperty(page.properties)
-          const body = renderPage(blocks)
+      if (isFullPage(page)) {
+        const blocks = await getBlocks(page.id)
+        const properties = renderProperty(page.properties)
+        const body = renderPage(blocks)
 
-          return {
-            success: true,
-            page,
-            blocks,
-            properties,
-            body,
-          }
-        } else {
-          return { success: false }
+        return {
+          success: true,
+          page,
+          blocks,
+          properties,
+          body,
         }
       } else {
-        return {
-          success: false,
-        }
+        return { success: false }
       }
     } else {
       return { success: false }
