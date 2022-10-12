@@ -9,6 +9,7 @@ const pageIds = ['a', 'b', 'c', 'd', 'e', 'f']
 const pageId = process.env.NOTION_PAGE_ID
 
 export default async function pages(req: NextApiRequest, res: NextApiResponse) {
+  console.log('get page')
   const client = await createUserClient(req)
   if (client) {
     const result = await getPageContents(client)
@@ -31,6 +32,7 @@ export type Response =
     }
 const getPageContents = async (notion: Client): Promise<Response> => {
   try {
+    console.log(pageId)
     if (pageId) {
       const id = pageIds[Math.floor(Math.random() * pageIds.length)]
       const page = await notion.pages.retrieve({

@@ -9,9 +9,11 @@ export const createClient = (token: string) => {
 
 export const createUserClient = async (req: NextApiRequest) => {
   const token = req.headers.authorization
+
   if (token) {
     const user = await verifyUserToken(token)
     const secrets = await getUserSecrets(user.uid)
+
     if (secrets) {
       return createClient(secrets.notion.access_token)
     }
