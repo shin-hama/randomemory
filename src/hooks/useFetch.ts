@@ -6,11 +6,7 @@ export const useFetch = <T>(key: string | null): SWRResponse<T, Error> => {
   const [user] = useUser()
 
   const result = useSWR(key, async (...args) => {
-    if (!user) {
-      throw new Error('User is not authorized')
-    }
-
-    const token = await user.getIdToken()
+    const token = await user?.getIdToken() || ""
 
     const res = await fetch(...args, {
       headers: {

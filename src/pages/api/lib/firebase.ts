@@ -1,11 +1,11 @@
-import { app } from '../../../configs/firebase_admin'
 import { getAuth } from 'firebase-admin/auth'
 import { getFirestore, FirestoreDataConverter } from 'firebase-admin/firestore'
 import { UserSecret } from '../../../types/user'
+import { admin } from '../configs/firebase_admin'
 
 export const createCustomToken = async (uid: string): Promise<string> => {
   try {
-    const token = await getAuth(app).createCustomToken(uid)
+    const token = await getAuth(admin).createCustomToken(uid)
     return token
   } catch (e) {
     console.error(`Failed to create custom token: ${e}`)
@@ -15,7 +15,7 @@ export const createCustomToken = async (uid: string): Promise<string> => {
 
 export const verifyUserToken = async (token: string) => {
   try {
-    return await getAuth(app).verifyIdToken(token)
+    return await getAuth(admin).verifyIdToken(token)
   } catch (e) {
     console.error(e)
     throw e
@@ -43,7 +43,7 @@ const UserSecretConverter: FirestoreDataConverter<UserSecret> = {
 
 export const setUserSecrets = async (uid: string, data: UserSecret) => {
   try {
-    const db = getFirestore(app)
+    const db = getFirestore(admin)
     await db.collection('/secrets/v1/users').doc(uid).withConverter(UserSecretConverter).set(data)
   } catch (e) {
     console.error(e)
@@ -53,7 +53,7 @@ export const setUserSecrets = async (uid: string, data: UserSecret) => {
 
 export const getUserSecrets = async (uid: string): Promise<UserSecret | undefined> => {
   try {
-    const db = getFirestore(app)
+    const db = getFirestore(admin)
     const user = await db
       .collection('/secrets/v1/users')
       .doc(uid)

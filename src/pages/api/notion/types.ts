@@ -23,11 +23,19 @@ export type RichTextItem = RichTextItemResponse
 
 export type SearchObjet = SearchResponse
 
-export type AccessTokenResponse = {
+export type AccessTokenSuccessResponse = {
   access_token: string
   workspace_id: string
   workspace_name?: string
   workspace_icon?: string
   bot_id: string
   owner: UserObjectResponse
+}
+export type AccessTokenErrorResponse = {
+  error: string
+}
+export type AccessTokenResponse = AccessTokenSuccessResponse | AccessTokenErrorResponse
+
+export const isErrorResponse = (obj: AccessTokenResponse): obj is AccessTokenErrorResponse => {
+  return 'error' in obj
 }

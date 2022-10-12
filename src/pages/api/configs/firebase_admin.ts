@@ -1,3 +1,4 @@
+import { apps } from 'firebase-admin'
 import { cert, initializeApp } from 'firebase-admin/app'
 
 if (!process.env.FIREBASE_PRIVATE_KEY) {
@@ -9,7 +10,9 @@ const sa = {
   privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
 }
 
-export const app = initializeApp({
-  credential: cert(sa),
-  databaseURL: 'https://reminder-note-b6707.firebaseio.com',
-})
+export const admin =
+  apps[0] ||
+  initializeApp({
+    credential: cert(sa),
+    databaseURL: 'https://reminder-note-b6707.firebaseio.com',
+  })

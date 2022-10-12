@@ -7,7 +7,7 @@ import NoteCard from '../components/NoteCard'
 import { useFetch } from '../hooks/useFetch'
 
 const Home: NextPage = () => {
-  const { data: page, error } = useFetch<Response>(`/notion/pages`)
+  const { data: page, error } = useFetch<Response>(`api/notion/pages`)
 
   return (
     <Layout>

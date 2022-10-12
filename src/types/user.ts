@@ -1,5 +1,5 @@
-import { AccessTokenResponse } from '../pages/api/notion/types'
+import { AccessTokenSuccessResponse } from '../pages/api/notion/types'
 
 export type UserSecret = {
-  notion: AccessTokenResponse
+  notion: AccessTokenSuccessResponse
 }
