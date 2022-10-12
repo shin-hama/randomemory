@@ -1,10 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { createCustomToken } from '../lib/firebase'
+import { AccessTokenResponse } from '../notion/types'
 
 const clientId = process.env.NOTION_CLIENT_ID
 const clientSecret = process.env.NOTION_CLIENT_SECRET
 const uri = 'https://api.notion.com/v1/oauth/token'
 
-export default async function oauth(req: NextApiRequest, res: NextApiResponse) {
+export type NotionLoginCallback =
+  | {
+      token: string
+      success: true
+      notion: AccessTokenResponse
+    }
+  | {
+      success: false
+      error: string
+    }
+
+export default async function oauth(
+  req: NextApiRequest,
+  res: NextApiResponse<NotionLoginCallback>
+) {
   const token = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
   const code = req.query.code
 
@@ -23,15 +39,21 @@ export default async function oauth(req: NextApiRequest, res: NextApiResponse) {
       body: JSON.stringify(body),
     })
       .then(async (result) => {
-        const value = await result.json()
+        const value = (await result.json()) as AccessTokenResponse
         console.log(value)
-        res.status(200).json(value)
+
+        const token = await createCustomToken(value.bot_id)
+        res.status(200).json({
+          success: true,
+          token,
+          notion: value,
+        })
       })
       .catch((e) => {
         console.error(e)
-        res?.status(400).json({ error: 'error' })
+        res?.status(400).json({ success: false, error: e })
       })
   } else {
-    res?.status(400).json({ error: 'code is not found' })
+    res?.status(400).json({ success: false, error: 'code is not found' })
   }
 }
