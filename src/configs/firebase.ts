@@ -1,7 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { FirebaseOptions, initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
-import { getAuth } from 'firebase/auth'
 import { initializeFirestore } from 'firebase/firestore'
 
 if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
@@ -18,7 +17,6 @@ const firebaseConfig: FirebaseOptions = {
 }
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig)
+export const app = initializeApp(firebaseConfig)
 export const analytics = getAnalytics(app)
-export const auth = getAuth(app)
 export const db = initializeFirestore(app, { ignoreUndefinedProperties: true })
