@@ -1,19 +1,26 @@
+import { Client } from '@notionhq/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { notion } from './notion'
 import type { DatabaseObject, PartialDatabaseObject, SearchObjet } from './types'
+import { createUserClient } from './util'
 
 export type GetDatabasesResponse = Omit<SearchObjet, 'results'> & {
   results: Array<DatabaseObject | PartialDatabaseObject>
 }
 
 export default async function databases(req: NextApiRequest, res: NextApiResponse) {
-  const result = await GetDatabases()
+  const client = await createUserClient(req)
 
-  res?.status(200).json({ ...result })
+  if (client) {
+    const result = await GetDatabases(client)
+
+    res?.status(200).json({ ...result })
+  } else {
+    res.status(400).json({ success: false })
+  }
 }
 
-async function GetDatabases() {
+async function GetDatabases(notion: Client) {
   const response = await notion.search({
     query: '',
     filter: {

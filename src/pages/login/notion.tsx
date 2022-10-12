@@ -19,8 +19,8 @@ const Callback: NextPage = () => {
       console.log(data)
       auth
         .signInWithCustomToken(data.token)
-        .then((user) => {
-          db.set('users', user.user.uid, { notion: data.notion })
+        .then(() => {
+          console.log('Success to login')
           router.push('/')
         })
         .catch((e) => {

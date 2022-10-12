@@ -7,8 +7,7 @@ import NoteCard from '../components/NoteCard'
 import { useFetch } from '../hooks/useFetch'
 
 const Home: NextPage = () => {
-  const { data: page } = useFetch<Response>('/api/notion/pages')
-  console.log(page)
+  const { data: page, error } = useFetch<Response>(`/notion/pages`)
 
   return (
     <Layout>
@@ -19,6 +18,7 @@ const Home: NextPage = () => {
           properties={page.properties}
         />
       )}
+      {error && <>Error: {error.message}</>}
     </Layout>
   )
 }

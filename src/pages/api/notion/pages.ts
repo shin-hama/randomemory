@@ -1,17 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { Client, isFullPage } from '@notionhq/client'
+
 import { renderPage, renderProperty } from '../lib/render'
 import { BlockObject, PageObject } from './types'
-
-import { notion } from './notion'
-import { isFullPage } from '@notionhq/client'
+import { createUserClient } from './util'
 
 const pageIds = ['a', 'b', 'c', 'd', 'e', 'f']
 const pageId = process.env.NOTION_PAGE_ID
 
 export default async function pages(req: NextApiRequest, res: NextApiResponse) {
-  const result = await getPageContents()
-
-  res?.status(200).json({ ...result })
+  const client = await createUserClient(req)
+  if (client) {
+    const result = await getPageContents(client)
+    res?.status(200).json({ ...result })
+  } else {
+    res.status(400).json({ success: false })
+  }
 }
 
 export type Response =
@@ -25,7 +29,7 @@ export type Response =
   | {
       success: false
     }
-const getPageContents = async (): Promise<Response> => {
+const getPageContents = async (notion: Client): Promise<Response> => {
   try {
     if (pageId) {
       const id = pageIds[Math.floor(Math.random() * pageIds.length)]
@@ -34,7 +38,7 @@ const getPageContents = async (): Promise<Response> => {
       })
 
       if (isFullPage(page)) {
-        const blocks = await getBlocks(page.id)
+        const blocks = await getBlocks(notion, page.id)
         const properties = renderProperty(page.properties)
         const body = renderPage(blocks)
 
@@ -57,7 +61,7 @@ const getPageContents = async (): Promise<Response> => {
   }
 }
 
-const getBlocks = async (parentId: string): Promise<Array<BlockObject>> => {
+const getBlocks = async (notion: Client, parentId: string): Promise<Array<BlockObject>> => {
   const blocks: BlockObject[] = []
   let cursor = null
   do {
@@ -72,7 +76,7 @@ const getBlocks = async (parentId: string): Promise<Array<BlockObject>> => {
       for (const block of results) {
         if ('type' in block) {
           if (block.has_children) {
-            const children = await getBlocks(block.id)
+            const children = await getBlocks(notion, block.id)
             blocks.push({ ...block, children })
           } else {
             blocks.push({ ...block })
