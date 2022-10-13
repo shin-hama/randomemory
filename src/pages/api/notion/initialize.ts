@@ -1,11 +1,13 @@
 import { Client } from '@notionhq/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { verifyUserToken } from '../lib/firebaseAuth'
 import { createUserClient } from './util'
 
 export default async function initialize(req: NextApiRequest, res: NextApiResponse) {
   const client = await createUserClient(req)
 
-  if (client) {
+  const user = await verifyUserToken(req)
+  if (client && user) {
     const result = await fetchPages(client)
     res.status(200).json({ result })
   } else {

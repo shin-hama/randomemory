@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { createCustomToken } from '../lib/firebase'
+import { createCustomToken } from '../lib/firebaseAuth'
 import { saveSecrets } from '../lib/secrets'
 import { AccessTokenResponse, isErrorResponse } from '../notion/types'
 
