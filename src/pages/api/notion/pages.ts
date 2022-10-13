@@ -9,7 +9,6 @@ const pageIds = ['a', 'b', 'c', 'd', 'e', 'f']
 const pageId = process.env.NOTION_PAGE_ID
 
 export default async function pages(req: NextApiRequest, res: NextApiResponse) {
-  console.log('get page')
   const client = await createUserClient(req)
   if (client) {
     const result = await getPageContents(client)
