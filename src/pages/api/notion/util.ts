@@ -1,22 +1,18 @@
 import type { NextApiRequest } from 'next'
 import { Client } from '@notionhq/client'
 
-import { verifyUserToken, getUserSecrets } from '../lib/firebase'
+import { getSecrets } from '../lib/secrets'
+import { isValidAccessToken } from './types'
 
 export const createClient = (token: string) => {
   return new Client({ auth: token })
 }
 
 export const createUserClient = async (req: NextApiRequest) => {
-  const token = req.headers.authorization
+  const token = getSecrets(req, 'notion')
 
-  if (token) {
-    const user = await verifyUserToken(token)
-    const secrets = await getUserSecrets(user.uid)
-
-    if (secrets) {
-      return createClient(secrets.notion.access_token)
-    }
+  if (isValidAccessToken(token)) {
+    return createClient(token.access_token)
   }
 
   return null

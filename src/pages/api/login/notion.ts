@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { createCustomToken, setUserSecrets } from '../lib/firebase'
+import { createCustomToken } from '../lib/firebase'
+import { saveSecrets } from '../lib/secrets'
 import { AccessTokenResponse, isErrorResponse } from '../notion/types'
 
 const clientId = process.env.NOTION_CLIENT_ID
@@ -44,12 +45,12 @@ export default async function oauth(
           res?.status(400).json({ success: false, error: value.error })
         } else {
           const token = await createCustomToken(value.bot_id)
+          saveSecrets(res, 'notion', value)
+
           res.status(200).json({
             success: true,
             token,
           })
-
-          setUserSecrets(value.bot_id, { notion: value })
         }
       })
       .catch((e) => {

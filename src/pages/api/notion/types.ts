@@ -39,3 +39,13 @@ export type AccessTokenResponse = AccessTokenSuccessResponse | AccessTokenErrorR
 export const isErrorResponse = (obj: AccessTokenResponse): obj is AccessTokenErrorResponse => {
   return 'error' in obj
 }
+
+export const isValidAccessToken = (obj: any): obj is AccessTokenSuccessResponse => {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    typeof obj.access_token === 'string' &&
+    typeof obj.workspace_id === 'string' &&
+    typeof obj.bot_id === 'string'
+  )
+}
