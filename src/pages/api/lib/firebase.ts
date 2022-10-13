@@ -1,4 +1,6 @@
 import { getAuth } from 'firebase-admin/auth'
+import { NextApiRequest } from 'next'
+
 import { admin } from '../configs/firebase_admin'
 
 export const createCustomToken = async (uid: string): Promise<string> => {
@@ -11,11 +13,21 @@ export const createCustomToken = async (uid: string): Promise<string> => {
   }
 }
 
-export const verifyUserToken = async (token: string) => {
+/**
+ * Verify user authorized by firebase auth.
+ * Return null if invalid authorization token is requested
+ */
+export const verifyUserToken = async (req: NextApiRequest) => {
   try {
-    return await getAuth(admin).verifyIdToken(token)
+    const token = req.headers.authorization || 'token'
+    if (token) {
+      return await getAuth(admin).verifyIdToken(token)
+    } else {
+      // Request is not authorized
+      return null
+    }
   } catch (e) {
     console.error(e)
-    throw e
+    return null
   }
 }

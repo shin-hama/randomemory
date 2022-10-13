@@ -4,7 +4,7 @@ import { Client } from '@notionhq/client'
 import { getSecrets } from '../lib/secrets'
 import { isValidAccessToken } from './types'
 
-export const createClient = (token: string) => {
+const createClient = (token: string) => {
   return new Client({ auth: token })
 }
 
