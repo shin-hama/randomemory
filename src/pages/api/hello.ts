@@ -5,11 +5,11 @@ type Data = {
   name: string
 }
 
-export default async function handler(req?: NextApiRequest, res?: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   try {
     res?.status(200).json({ name: 'John Doe' })
-    console.log('succses')
   } catch (e) {
     console.log(e)
+    res?.status(500).end()
   }
 }

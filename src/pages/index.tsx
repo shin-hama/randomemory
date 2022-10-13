@@ -9,8 +9,8 @@ import { useFetch } from '../hooks/useFetch'
 const Home: NextPage = () => {
   const { data: page, error } = useFetch<Response>(`api/notion/pages`)
 
-  const { data: cookies } = useFetch('api/cookies')
-  console.log(cookies)
+  const { data: hello } = useFetch('api/hello')
+  console.log(hello)
 
   return (
     <Layout>

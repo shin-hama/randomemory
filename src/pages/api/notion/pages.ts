@@ -12,7 +12,7 @@ export default async function pages(req: NextApiRequest, res: NextApiResponse) {
   const client = await createUserClient(req)
   if (client) {
     const result = await getPageContents(client)
-    res?.status(200).json({ ...result })
+    res.status(200).json({ ...result })
   } else {
     res.status(400).json({ success: false })
   }
