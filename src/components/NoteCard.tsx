@@ -8,23 +8,36 @@ import Typography from '@mui/material/Typography'
 import ReactMarkdown from 'react-markdown'
 import dayjs from 'dayjs'
 
+import { useFetch } from '../hooks/useFetch'
+import { PageContentResponse } from '../pages/api/notion/pages/[id]'
+
 type Props = {
-  body: string
-  createdAt: string
-  properties?: Array<string>
+  pageId: string
 }
-const NoteCard: React.FC<Props> = ({ body, createdAt, properties }) => {
+const NoteCard: React.FC<Props> = ({ pageId }) => {
+  const { data: page, error } = useFetch<PageContentResponse>(`api/notion/pages/${pageId}`)
+
+  if (error || page?.success === false) {
+    return (
+      <Card variant="outlined">
+        <CardContent>
+          <Typography>{error?.message}</Typography>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card variant="outlined">
       <CardContent>
         <Stack spacing={2} divider={<Divider />}>
-          <ReactMarkdown>{body}</ReactMarkdown>
+          <ReactMarkdown>{page?.body || ''}</ReactMarkdown>
           <Stack spacing={2}>
             <Typography variant="subtitle2">
-              Created at: {dayjs(createdAt).format('YYYY/MM/DD HH:mm:ss')}
+              Created at: {dayjs(page?.page.created_time).format('YYYY/MM/DD HH:mm:ss')}
             </Typography>
             <Stack direction="row" spacing={1}>
-              {properties?.map((prop) => (
+              {page?.properties?.map((prop) => (
                 <Chip key={prop} label={prop} />
               ))}
             </Stack>

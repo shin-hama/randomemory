@@ -1,27 +1,37 @@
 import * as React from 'react'
 import type { NextPage } from 'next'
 
-import { Response } from './api/notion/pages'
 import Layout from '../components/Layout'
 import NoteCard from '../components/NoteCard'
 import { useFetch } from '../hooks/useFetch'
+import { useUserDB } from '../hooks/useUserDB'
 
 const Home: NextPage = () => {
-  const { data: page, error } = useFetch<Response>(`api/notion/pages`)
+  const [pageId, setPageId] = React.useState<string>('')
 
-  const { data: hello } = useFetch('api/hello')
+  const { getContents } = useUserDB()
+
+  React.useEffect(() => {
+    if (!pageId) {
+      getContents()
+        .then((result) => {
+          if (result?.notion) {
+            const id = result.notion[Math.floor(Math.random() * result.notion.length)]
+            setPageId(id)
+          }
+        })
+        .catch((e) => {
+          console.error(e)
+        })
+    }
+  }, [getContents, pageId])
+
+  const { data: hello } = useFetch('api/hello?pages=a,v,b,s')
   console.log(hello)
 
   return (
     <Layout>
-      {page?.success && (
-        <NoteCard
-          body={page.body}
-          createdAt={page.page.created_time}
-          properties={page.properties}
-        />
-      )}
-      {error && <>Error: {error.message}</>}
+      <NoteCard pageId={pageId} />
     </Layout>
   )
 }
