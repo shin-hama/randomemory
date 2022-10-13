@@ -3,6 +3,7 @@ import * as React from 'react'
 import { useUser } from '../contexts/UserAuthorizationProvider'
 import { UserContent } from '../types/User'
 import { useFirestore } from './firebase/useFirestore'
+import { useFetch } from './useFetch'
 
 const UserContentConverter: FirestoreDataConverter<UserContent> = {
   toFirestore: (data) => {
@@ -21,6 +22,9 @@ const UserContentConverter: FirestoreDataConverter<UserContent> = {
 export const useUserDB = () => {
   const db = useFirestore()
   const [user] = useUser()
+  const { data } = useFetch('/api/notion/initialize', (arg, header) => {
+    const content = actions.getContents()
+  })
 
   const actions = React.useMemo(() => {
     return {
