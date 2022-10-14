@@ -3,31 +3,18 @@ import type { NextPage } from 'next'
 
 import Layout from '../components/Layout'
 import NoteCard from '../components/NoteCard'
-import { useFetch } from '../hooks/useFetch'
-import { useUserDB } from '../hooks/useUserDB'
+import { useUserContents } from '../hooks/useUserContent'
 
 const Home: NextPage = () => {
   const [pageId, setPageId] = React.useState<string>('')
-
-  const { getContents } = useUserDB()
+  const userContents = useUserContents()
 
   React.useEffect(() => {
-    if (!pageId) {
-      getContents()
-        .then((result) => {
-          if (result?.notion) {
-            const id = result.notion[Math.floor(Math.random() * result.notion.length)]
-            setPageId(id)
-          }
-        })
-        .catch((e) => {
-          console.error(e)
-        })
+    if (!pageId && userContents?.notion) {
+      const id = userContents.notion[Math.floor(Math.random() * userContents.notion.length)]
+      setPageId(id)
     }
-  }, [getContents, pageId])
-
-  const { data: hello } = useFetch('api/hello?pages=a,v,b,s')
-  console.log(hello)
+  }, [userContents, pageId])
 
   return (
     <Layout>

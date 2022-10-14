@@ -9,21 +9,30 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore'
+import { ModelBase } from '../../types/models'
 
 interface Firestore {
-  set: <T extends DocumentData>(path: string, id: string, data: T) => Promise<void>
+  set: <T extends ModelBase>(
+    path: string,
+    id: string,
+    data: Omit<T, keyof ModelBase>
+  ) => Promise<void>
   get: <T>(path: string, id: string, converter: FirestoreDataConverter<T>) => Promise<T | undefined>
-  update: <T extends DocumentData>(path: string, id: string, data: T) => Promise<void>
+  update: <T extends DocumentData>(path: string, id: string, data: Partial<T>) => Promise<void>
 }
 export const useFirestore = () => {
   const firestore = React.useMemo<Firestore>(() => {
     const a: Firestore = {
-      set: async <T extends DocumentData>(path: string, id: string, data: T) => {
+      set: async <T extends ModelBase>(
+        path: string,
+        id: string,
+        data: Omit<T, keyof ModelBase>
+      ) => {
         const ref = doc(getFirestore(), path, id)
         await setDoc(ref, {
           ...data,
           createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp,
+          updatedAt: serverTimestamp(),
         })
       },
       get: async <T>(path: string, id: string, converter: FirestoreDataConverter<T>) => {
