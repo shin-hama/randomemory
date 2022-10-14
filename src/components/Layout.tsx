@@ -14,6 +14,7 @@ type Props = {
 }
 const Layout: React.FC<Props> = ({ children }) => {
   const [user, auth] = useUser()
+
   return (
     <>
       <AppBar>

@@ -34,8 +34,8 @@ export const useUserContents = () => {
     const now = new Date().getDate()
     const needUpdate = userContents?.updatedAt && now - userContents.updatedAt.getDate() !== 0
 
-    return existsNotion === false || needUpdate
-  }, [userContents])
+    return user && (existsNotion === false || needUpdate)
+  }, [user, userContents])
 
   const { data, error } = useFetch<InitNotionResponse>(shouldInit ? '/api/notion/initialize' : null)
 
@@ -47,8 +47,8 @@ export const useUserContents = () => {
       } else {
         db.set<UserContent>(USER_CONTENTS_PATH, user.uid, { notion: data.pages })
       }
-    } else if (!data?.success || error) {
-      console.error(error)
+    } else if (data?.success === false || error) {
+      console.error('Fail to fetch user content')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])

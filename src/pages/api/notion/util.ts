@@ -13,8 +13,7 @@ export const createUserClient = async (req: NextApiRequest) => {
 
   if (isValidAccessToken(token)) {
     const client = createClient(token.access_token)
-    const me = await client.users.me({})
-    console.log(me)
+    await client.users.me({})
     return client
   }
 

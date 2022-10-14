@@ -10,19 +10,24 @@ export const useFetch = <T>(
   const [user] = useUser()
 
   const result = useSWR(key, async (...args) => {
-    const token = (await user?.getIdToken()) || ''
+    try {
+      const token = (await user?.getIdToken()) || ''
 
-    const res = await fetcher(...args, {
-      headers: {
-        authorization: token,
-      },
-    })
-    if (!res.ok) {
-      const error = new Error('An error occurred while fetching the data.')
+      const res = await fetcher(...args, {
+        headers: {
+          authorization: token,
+        },
+      })
+      if (!res.ok) {
+        const error = new Error('An error occurred while fetching the data.')
 
-      throw error
+        throw error
+      }
+      return res.json()
+    } catch (e) {
+      console.error(e)
+      console.error(key)
     }
-    return res.json()
   })
 
   return result

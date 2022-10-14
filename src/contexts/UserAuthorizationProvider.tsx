@@ -8,8 +8,7 @@ type Props = {
   children: React.ReactNode
 }
 export const UserAuthorizationProvider: React.FC<Props> = ({ children }) => {
-  // アクセス直後は Undefined だが、Firebase への接続が完了した段階で、User か null がセットされる
-  const [user, setUser] = React.useState<User | null>()
+  const [user, setUser] = React.useState<User | null>(null)
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), (userInfo) => {
@@ -21,10 +20,6 @@ export const UserAuthorizationProvider: React.FC<Props> = ({ children }) => {
     }
   }, [setUser])
 
-  if (user === undefined) {
-    return <></>
-  }
-
   return (
     <UserAuthorizationContext.Provider value={user}>{children}</UserAuthorizationContext.Provider>
   )
@@ -33,6 +28,9 @@ export const UserAuthorizationProvider: React.FC<Props> = ({ children }) => {
 export const useUser = () => {
   // null なら未ログイン、 undefined ならログイン処理中
   const user = React.useContext(UserAuthorizationContext)
+  if (user === undefined) {
+    throw new Error('UserAuthorizationProvider is not wrapped')
+  }
 
   const actions = React.useMemo(() => {
     return {

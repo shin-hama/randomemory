@@ -29,6 +29,10 @@ const NoteCard: React.FC<Props> = ({ pageId }) => {
     )
   }
 
+  if (!page) {
+    return <>loading</>
+  }
+
   return (
     <Card variant="outlined">
       <CardContent>
