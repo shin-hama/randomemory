@@ -28,30 +28,20 @@ export const useUserContents = () => {
 
   const [userContents, setUserContents] = React.useState<UserContent | null>()
 
-  const { data, error } = useFetch<InitNotionResponse>(
-    '/api/notion/initialize',
-    async (args, headers) => {
-      console.log('init')
-      const existsNotion = userContents !== null && userContents?.notion !== undefined
+  const shouldInit = React.useMemo(() => {
+    const existsNotion = userContents !== null && userContents?.notion !== undefined
 
-      const now = new Date().getDate()
-      const needUpdate = userContents?.updatedAt && now - userContents.updatedAt.getDate() !== 0
+    const now = new Date().getDate()
+    const needUpdate = userContents?.updatedAt && now - userContents.updatedAt.getDate() !== 0
 
-      console.log(existsNotion)
-      console.log(needUpdate)
-      if (existsNotion === false || needUpdate) {
-        console.log('test')
-        return await fetch(args, headers)
-      }
+    return existsNotion === false || needUpdate
+  }, [userContents])
 
-      return Response.error()
-    }
-  )
+  const { data, error } = useFetch<InitNotionResponse>(shouldInit ? '/api/notion/initialize' : null)
 
   React.useEffect(() => {
     if (data?.success && user) {
       console.log('Update user contents')
-      console.log(data)
       if (userContents) {
         db.update<UserContent>(USER_CONTENTS_PATH, user.uid, { notion: data.pages })
       } else {

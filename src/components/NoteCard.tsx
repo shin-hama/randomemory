@@ -12,10 +12,12 @@ import { useFetch } from '../hooks/useFetch'
 import { PageContentResponse } from '../pages/api/notion/pages/[id]'
 
 type Props = {
-  pageId: string
+  pageId?: string
 }
 const NoteCard: React.FC<Props> = ({ pageId }) => {
-  const { data: page, error } = useFetch<PageContentResponse>(`api/notion/pages/${pageId}`)
+  const { data: page, error } = useFetch<PageContentResponse>(
+    pageId ? `api/notion/pages/${pageId}` : null
+  )
 
   if (error || page?.success === false) {
     return (

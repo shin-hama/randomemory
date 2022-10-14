@@ -6,7 +6,7 @@ import NoteCard from '../components/NoteCard'
 import { useUserContents } from '../hooks/useUserContent'
 
 const Home: NextPage = () => {
-  const [pageId, setPageId] = React.useState<string>('')
+  const [pageId, setPageId] = React.useState<string>()
   const userContents = useUserContents()
 
   React.useEffect(() => {
