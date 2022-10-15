@@ -5,6 +5,7 @@ import Chip from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import Skeleton from '@mui/material/Skeleton'
 import ReactMarkdown from 'react-markdown'
 import dayjs from 'dayjs'
 
@@ -29,23 +30,29 @@ const NoteCard: React.FC<Props> = ({ pageId }) => {
     )
   }
 
-  if (!page) {
-    return <>loading</>
-  }
-
   return (
     <Card variant="outlined">
       <CardContent>
         <Stack spacing={2} divider={<Divider />}>
-          <ReactMarkdown>{page?.body || ''}</ReactMarkdown>
+          {page ? (
+            <ReactMarkdown>{page?.body || ''}</ReactMarkdown>
+          ) : (
+            <Skeleton variant="rectangular" height="10rem" animation="wave" />
+          )}
           <Stack spacing={2}>
-            <Typography variant="subtitle2">
-              Created at: {dayjs(page?.page.created_time).format('YYYY/MM/DD HH:mm:ss')}
-            </Typography>
+            {page ? (
+              <Typography variant="subtitle2">
+                Created at: {dayjs(page?.page.created_time).format('YYYY/MM/DD HH:mm:ss')}
+              </Typography>
+            ) : (
+              <Skeleton animation="wave" width="40%" />
+            )}
             <Stack direction="row" spacing={1}>
-              {page?.properties?.map((prop) => (
-                <Chip key={prop} label={prop} />
-              ))}
+              {page
+                ? page.properties?.map((prop) => <Chip key={prop} label={prop} />)
+                : [...Array(3)].map((_, i) => (
+                    <Skeleton key={`chip-skeleton-{i}`} animation="wave" width="5rem" />
+                  ))}
             </Stack>
           </Stack>
         </Stack>
