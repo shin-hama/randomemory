@@ -10,6 +10,7 @@ const uri = 'https://api.notion.com/v1/oauth/token'
 export type NotionLoginCallback =
   | {
       token: string
+      name: string | null
       success: true
     }
   | {
@@ -50,6 +51,7 @@ export default async function oauth(
           res.status(200).json({
             success: true,
             token,
+            name: value.owner.user.name,
           })
         }
       })

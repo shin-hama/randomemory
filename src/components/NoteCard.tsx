@@ -35,23 +35,28 @@ const NoteCard: React.FC<Props> = ({ pageId }) => {
       <CardContent>
         <Stack spacing={2} divider={<Divider />}>
           {page ? (
-            <ReactMarkdown>{page?.body || ''}</ReactMarkdown>
+            <ReactMarkdown>{page.body || ''}</ReactMarkdown>
           ) : (
             <Skeleton variant="rectangular" height="10rem" animation="wave" />
           )}
           <Stack spacing={2}>
             {page ? (
               <Typography variant="subtitle2">
-                Created at: {dayjs(page?.page.created_time).format('YYYY/MM/DD HH:mm:ss')}
+                Created at: {dayjs(page.page.created_time).format('YYYY/MM/DD HH:mm:ss')}
               </Typography>
             ) : (
               <Skeleton animation="wave" width="40%" />
             )}
             <Stack direction="row" spacing={1}>
               {page
-                ? page.properties?.map((prop) => <Chip key={prop} label={prop} />)
+                ? page.properties.map((prop) => <Chip key={prop} label={prop} />)
                 : [...Array(3)].map((_, i) => (
-                    <Skeleton key={`chip-skeleton-{i}`} animation="wave" width="5rem" />
+                    <Skeleton
+                      key={`chip-skeleton-${i}`}
+                      variant="rounded"
+                      animation="wave"
+                      width="5rem"
+                    />
                   ))}
             </Stack>
           </Stack>

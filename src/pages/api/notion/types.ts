@@ -29,7 +29,7 @@ export type AccessTokenSuccessResponse = {
   workspace_name?: string
   workspace_icon?: string
   bot_id: string
-  owner: UserObjectResponse
+  owner: { type: 'user'; user: UserObjectResponse }
 }
 export type AccessTokenErrorResponse = {
   error: string

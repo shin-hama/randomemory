@@ -16,10 +16,10 @@ const Callback: NextPage = () => {
 
   React.useEffect(() => {
     if (data && data.success) {
-      console.log(data)
       auth
         .signInWithCustomToken(data.token)
-        .then(() => {
+        .then(async () => {
+          await auth.updateProfile({ displayName: data.name })
           console.log('Success to login')
           router.push('/')
         })

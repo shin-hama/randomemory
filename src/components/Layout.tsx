@@ -23,7 +23,7 @@ const Layout: React.FC<Props> = ({ children }) => {
           <div style={{ flexGrow: 1 }} />
           {user ? (
             <>
-              <p>User: {user.uid}</p>
+              <p>User: {user.displayName}</p>
               <button onClick={auth.signOut}>logout</button>
             </>
           ) : (

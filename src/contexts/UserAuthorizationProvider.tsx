@@ -1,5 +1,11 @@
 import * as React from 'react'
-import { getAuth, onAuthStateChanged, signInWithCustomToken, User } from 'firebase/auth'
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithCustomToken,
+  updateProfile,
+  User,
+} from 'firebase/auth'
 import { app } from '../configs/firebase'
 
 const UserAuthorizationContext = React.createContext<User | null | undefined>(undefined)
@@ -39,6 +45,12 @@ export const useUser = () => {
       },
       signOut: () => {
         getAuth(app).signOut()
+      },
+      updateProfile: async (updateUser: Partial<Pick<User, 'displayName' | 'photoURL'>>) => {
+        const user = getAuth(app).currentUser
+        if (user) {
+          await updateProfile(user, updateUser)
+        }
       },
     }
   }, [])
