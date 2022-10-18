@@ -60,6 +60,8 @@ export default async function oauth(
         console.error(e)
         res?.status(400).json({ success: false, error: e })
       })
+  } else if (req.query.error) {
+    res?.status(400).json({ success: false, error: req.query.error.toString() })
   } else {
     res?.status(400).json({ success: false, error: 'code is not found' })
   }

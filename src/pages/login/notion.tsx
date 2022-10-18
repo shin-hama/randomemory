@@ -21,16 +21,15 @@ const Callback: NextPage = () => {
         .then(async () => {
           await auth.updateProfile({ displayName: data.name })
           console.log('Success to login')
-          router.push('/')
         })
         .catch((e) => {
           console.error(e)
         })
-    } else if (data?.success === false) {
-      console.error(data.error)
-    } else if (error) {
-      console.error(error)
+    } else {
+      console.log('error')
     }
+
+    router.push('/')
   }, [auth, data, db, error, router])
 
   return <></>

@@ -18,15 +18,21 @@ export const useFetch = <T>(
           authorization: token,
         },
       })
+      console.log(key)
+
+      console.log(res)
       if (!res.ok) {
         const error = new Error('An error occurred while fetching the data.')
 
         throw error
       }
+
       return res.json()
     } catch (e) {
       console.error(e)
       console.error(key)
+
+      throw e
     }
   })
 
