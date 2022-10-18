@@ -105,7 +105,7 @@ export function renderPage(content: Array<BlockObject>): string {
   })
 }
 
-function renderBlock(block: BlockObject): string | null {
+function renderBlock(block: BlockObject): string {
   const stringify = (node: BlockObject, contents: string[]): string | null => {
     switch (node.type) {
       case 'heading_1':
@@ -156,15 +156,25 @@ function renderBlock(block: BlockObject): string | null {
             return md.paragraph(node.video.caption)
         }
         break
+      case 'to_do':
+      case 'synced_block':
+      case 'column':
+      case 'child_page':
+      case 'child_database':
+      case 'template':
       case 'table':
       case 'table_row':
+        return ''
+      default:
+        return null
     }
-    return null
+    return ''
   }
 
   const visit = (node: BlockObject) => {
     const contents: string[] = node.children?.map((child) => visit(child)).filter(isNotNull) ?? []
     return (
+      // null が帰ってきたら、オブジェクトをそのまま表示する
       stringify(node, contents) ??
       `<pre hidden data-blocktype="${node.type}">\n${JSON.stringify(node, null, 2)}\n</pre>\n\n`
     )
