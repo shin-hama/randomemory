@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+
 import { createCustomToken } from '../lib/firebaseAuth'
 import { saveSecrets } from '../lib/secrets'
 import { AccessTokenResponse, isErrorResponse } from '../notion/types'
 
-const clientId = process.env.NOTION_CLIENT_ID
+const clientId = process.env.NEXT_PUBLIC_NOTION_CLIENT_ID
 const clientSecret = process.env.NOTION_CLIENT_SECRET
 const uri = 'https://api.notion.com/v1/oauth/token'
 
