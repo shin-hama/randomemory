@@ -9,24 +9,14 @@ import Typography from '@mui/material/Typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { useUser } from '../contexts/UserAuthorizationProvider'
-import { LoginResponse } from '../pages/api/login'
-import { NOTION_LOGIN_URL } from '../configs/notion'
+import { useLogin } from '../hooks/useLogin'
 
 type Props = {
   children?: React.ReactNode
 }
 const Layout: React.FC<Props> = ({ children }) => {
   const [user, auth] = useUser()
-
-  const handleSignIn: React.MouseEventHandler = React.useCallback(async () => {
-    const result = (await (await fetch('api/login')).json()) as LoginResponse
-
-    if (result.customToken) {
-      auth.signInWithCustomToken(result.customToken)
-    } else {
-      window.open(NOTION_LOGIN_URL, '_self')
-    }
-  }, [auth])
+  const login = useLogin()
 
   return (
     <>
@@ -40,7 +30,7 @@ const Layout: React.FC<Props> = ({ children }) => {
               <button onClick={auth.signOut}>logout</button>
             </>
           ) : (
-            <Button variant="contained" onClick={handleSignIn}>
+            <Button variant="contained" onClick={login.notion}>
               login
             </Button>
           )}

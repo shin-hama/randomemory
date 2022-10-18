@@ -14,7 +14,7 @@ type Props = {
   children: React.ReactNode
 }
 export const UserAuthorizationProvider: React.FC<Props> = ({ children }) => {
-  const [user, setUser] = React.useState<User | null>(null)
+  const [user, setUser] = React.useState<User | null>()
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), (userInfo) => {
@@ -34,9 +34,6 @@ export const UserAuthorizationProvider: React.FC<Props> = ({ children }) => {
 export const useUser = () => {
   // null なら未ログイン、 undefined ならログイン処理中
   const user = React.useContext(UserAuthorizationContext)
-  if (user === undefined) {
-    throw new Error('UserAuthorizationProvider is not wrapped')
-  }
 
   const actions = React.useMemo(() => {
     return {

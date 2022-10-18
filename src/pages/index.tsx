@@ -4,10 +4,14 @@ import type { NextPage } from 'next'
 import Layout from '../components/Layout'
 import NoteCard from '../components/NoteCard'
 import { useUserContents } from '../hooks/useUserContent'
+import { useUser } from '../contexts/UserAuthorizationProvider'
+import Logins from '../components/Logins'
 
 const Home: NextPage = () => {
   const [pageId, setPageId] = React.useState<string>()
   const userContents = useUserContents()
+
+  const [user] = useUser()
 
   React.useEffect(() => {
     if (!pageId && userContents?.notion) {
@@ -16,11 +20,11 @@ const Home: NextPage = () => {
     }
   }, [userContents, pageId])
 
-  return (
-    <Layout>
-      <NoteCard pageId={pageId} />
-    </Layout>
-  )
+  if (user === undefined) {
+    return <></>
+  }
+
+  return <Layout>{user ? <NoteCard pageId={pageId} /> : <Logins />}</Layout>
 }
 
 export default Home
