@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { useUser } from '../contexts/UserAuthorizationProvider'
 import { useLogin } from '../hooks/useLogin'
+import { useRouter } from 'next/router'
 
 type Props = {
   children?: React.ReactNode
@@ -17,6 +18,14 @@ type Props = {
 const Layout: React.FC<Props> = ({ children }) => {
   const [user, auth] = useUser()
   const login = useLogin()
+
+  const router = useRouter()
+
+  const handleSignOut = React.useCallback(async () => {
+    await auth.signOut()
+
+    router.reload()
+  }, [auth, router])
 
   return (
     <>
@@ -27,7 +36,7 @@ const Layout: React.FC<Props> = ({ children }) => {
           {user ? (
             <>
               <p>User: {user.displayName}</p>
-              <button onClick={auth.signOut}>logout</button>
+              <button onClick={handleSignOut}>logout</button>
             </>
           ) : (
             <Button variant="contained" onClick={login.notion}>

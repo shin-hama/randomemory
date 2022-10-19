@@ -40,8 +40,8 @@ export const useUser = () => {
       signInWithCustomToken: async (token: string) => {
         return await signInWithCustomToken(getAuth(app), token)
       },
-      signOut: () => {
-        getAuth(app).signOut()
+      signOut: async () => {
+        await getAuth(app).signOut()
       },
       updateProfile: async (updateUser: Partial<Pick<User, 'displayName' | 'photoURL'>>) => {
         const user = getAuth(app).currentUser
