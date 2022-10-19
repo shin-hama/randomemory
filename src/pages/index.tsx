@@ -8,23 +8,30 @@ import { useUser } from '../contexts/UserAuthorizationProvider'
 import Logins from '../components/Logins'
 
 const Home: NextPage = () => {
-  const [pageId, setPageId] = React.useState<string>()
+  const [pageIds, setPageIds] = React.useState<Array<string>>()
   const userContents = useUserContents()
 
   const [user] = useUser()
 
   React.useEffect(() => {
-    if (!pageId && userContents?.notion) {
-      const id = userContents.notion[Math.floor(Math.random() * userContents.notion.length)]
-      setPageId(id)
+    if (!pageIds && userContents?.notion) {
+      const cloned = [...userContents?.notion]
+
+      setPageIds(
+        [...Array(2)].map(() => cloned.splice(Math.floor(Math.random() * cloned.length), 1)[0])
+      )
     }
-  }, [userContents, pageId])
+  }, [userContents, pageIds])
 
   if (user === undefined) {
     return <></>
   }
 
-  return <Layout>{user ? <NoteCard pageId={pageId} /> : <Logins />}</Layout>
+  return (
+    <Layout>
+      {user ? pageIds?.map((pageId) => <NoteCard key={pageId} pageId={pageId} />) : <Logins />}
+    </Layout>
+  )
 }
 
 export default Home
