@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Grid from '@mui/material/Grid'
 import type { NextPage } from 'next'
 
 import Layout from '../components/Layout'
@@ -8,13 +9,13 @@ import { useUser } from '../contexts/UserAuthorizationProvider'
 import Logins from '../components/Logins'
 
 const Home: NextPage = () => {
-  const [pageIds, setPageIds] = React.useState<Array<string>>()
+  const [pageIds, setPageIds] = React.useState<Array<string>>([])
   const userContents = useUserContents()
 
   const [user] = useUser()
 
   React.useEffect(() => {
-    if (!pageIds && userContents?.notion) {
+    if (pageIds.length === 0 && userContents?.notion) {
       const cloned = [...userContents?.notion]
 
       setPageIds(
@@ -24,12 +25,23 @@ const Home: NextPage = () => {
   }, [userContents, pageIds])
 
   if (user === undefined) {
+    // ログイン状態の検証中
     return <></>
   }
 
   return (
     <Layout>
-      {user ? pageIds?.map((pageId) => <NoteCard key={pageId} pageId={pageId} />) : <Logins />}
+      <Grid container xs={12} sm={6}>
+        {user ? (
+          pageIds.map((pageId) => (
+            <Grid item key={pageId}>
+              <NoteCard key={pageId} pageId={pageId} />
+            </Grid>
+          ))
+        ) : (
+          <Logins />
+        )}
+      </Grid>
     </Layout>
   )
 }
