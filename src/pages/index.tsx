@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import type { NextPage } from 'next'
 
@@ -31,17 +32,21 @@ const Home: NextPage = () => {
 
   return (
     <Layout>
-      <Grid container xs={12} sm={6}>
-        {user ? (
-          pageIds.map((pageId) => (
-            <Grid item key={pageId}>
-              <NoteCard key={pageId} pageId={pageId} />
-            </Grid>
-          ))
-        ) : (
+      {user ? (
+        <Container sx={{ py: 6, background: (theme) => theme.palette.grey[100] }}>
+          <Grid container xs={12} sm={6} sx={{ backgroundColor: 'grey' }}>
+            {pageIds.map((pageId) => (
+              <Grid item key={pageId}>
+                <NoteCard key={pageId} pageId={pageId} />
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      ) : (
+        <Container maxWidth="xs" sx={{ py: 6 }}>
           <Logins />
-        )}
-      </Grid>
+        </Container>
+      )}
     </Layout>
   )
 }

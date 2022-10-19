@@ -1,3 +1,4 @@
+import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles'
 import * as React from 'react'
 
@@ -35,5 +36,10 @@ type Props = {
   children: React.ReactNode
 }
 export const AppThemeProvider: React.FC<Props> = ({ children }) => {
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {children}
+    </ThemeProvider>
+  )
 }
