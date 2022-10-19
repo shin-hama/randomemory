@@ -4,10 +4,17 @@ import { Client, isFullPage } from '@notionhq/client'
 import { renderPage, renderProperty } from '../../lib/render'
 import { BlockObject, PageObject } from '../types'
 import { createUserClient } from '../util'
+import { verifyUserToken } from '../../lib/firebaseAuth'
 
 export default async function pages(req: NextApiRequest, res: NextApiResponse) {
+  const user = await verifyUserToken(req)
+  if (!user) {
+    res.status(401).json({ success: false })
+  }
+
   const client = await createUserClient(req)
   const [pageId] = [req.query.id].flat(1)
+
   if (client && pageId) {
     const result = await getPageContents(client, pageId)
     res.status(200).json({ ...result })
