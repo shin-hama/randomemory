@@ -29,15 +29,24 @@ export const useUserContents = () => {
   const [userContents, setUserContents] = React.useState<UserContent | null>(null)
 
   const shouldInit = React.useMemo(() => {
+    // UserContents 内に Notion 用データが存在しない
     const existsNotion = userContents !== null && userContents?.notion !== undefined
 
+    // 最終更新日から1日以上経過している
     const now = new Date().getDate()
     const needUpdate = userContents?.updatedAt && now - userContents.updatedAt.getDate() !== 0
 
     return user && (existsNotion === false || needUpdate)
   }, [user, userContents])
 
-  const { data, error } = useFetch<InitNotionResponse>(shouldInit ? '/api/notion/initialize' : null)
+  const { data, error } = useFetch<InitNotionResponse>(
+    shouldInit ? '/api/notion/initialize' : null,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  )
 
   React.useEffect(() => {
     if (data?.success && user) {

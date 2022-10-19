@@ -20,7 +20,11 @@ type Props = {
 }
 const NoteCard: React.FC<Props> = ({ pageId }) => {
   const { data: page, error } = useFetch<PageContentResponse>(
-    pageId ? `api/notion/pages/${pageId}` : null
+    pageId ? `api/notion/pages/${pageId}` : null,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+    }
   )
 
   if (error || page?.success === false) {
