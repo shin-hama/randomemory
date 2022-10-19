@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -37,7 +38,9 @@ const NoteCard: React.FC<Props> = ({ pageId }) => {
       <CardContent>
         <Stack spacing={2} divider={<Divider />}>
           {page ? (
-            <ReactMarkdown>{page.body || ''}</ReactMarkdown>
+            <Box height="22rem" overflow="hidden" sx={{ overflowWrap: 'break-word' }}>
+              <ReactMarkdown>{page.body || ''}</ReactMarkdown>
+            </Box>
           ) : (
             <Skeleton variant="rectangular" height="10rem" animation="wave" />
           )}
@@ -66,7 +69,8 @@ const NoteCard: React.FC<Props> = ({ pageId }) => {
       </CardContent>
       {page && (
         <CardActions>
-          <Button variant="text" href={page.page.url}>
+          <Box sx={{ flexGrow: 1 }} />
+          <Button variant="text" href={page.page.url} target="_blank" rel="noreferrer noopener">
             Open in Notion
           </Button>
         </CardActions>

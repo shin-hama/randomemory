@@ -34,9 +34,9 @@ const Home: NextPage = () => {
     <Layout>
       {user ? (
         <Container sx={{ py: 6, background: (theme) => theme.palette.grey[100] }}>
-          <Grid container xs={12} sm={6} sx={{ backgroundColor: 'grey' }}>
+          <Grid container spacing={1}>
             {pageIds.map((pageId) => (
-              <Grid item key={pageId}>
+              <Grid item key={pageId} xs={12} sm={6}>
                 <NoteCard key={pageId} pageId={pageId} />
               </Grid>
             ))}
