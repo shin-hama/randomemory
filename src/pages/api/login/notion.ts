@@ -49,10 +49,16 @@ export default async function oauth(
           const token = await createCustomToken(value.bot_id)
           saveSecrets(res, 'notion', value)
 
+          const user = value.owner.user
+          const altName =
+            user.type === 'person'
+              ? user.person.email?.split('@')[0] || null
+              : user.bot.workspace_name
+
           res.status(200).json({
             success: true,
             token,
-            name: value.owner.user.name,
+            name: user.name || altName,
           })
         }
       })
