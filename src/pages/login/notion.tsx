@@ -25,11 +25,11 @@ const Callback: NextPage = () => {
         .catch((e) => {
           console.error(e)
         })
+        .finally(() => router.push('/'))
     } else {
       console.log('error')
+      router.push('/')
     }
-
-    router.push('/')
   }, [auth, data, db, error, router])
 
   return <></>

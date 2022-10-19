@@ -26,7 +26,7 @@ export const useUserContents = () => {
   const db = useFirestore()
   const [user] = useUser()
 
-  const [userContents, setUserContents] = React.useState<UserContent | null>()
+  const [userContents, setUserContents] = React.useState<UserContent | null>(null)
 
   const shouldInit = React.useMemo(() => {
     const existsNotion = userContents !== null && userContents?.notion !== undefined
@@ -42,11 +42,17 @@ export const useUserContents = () => {
   React.useEffect(() => {
     if (data?.success && user) {
       console.log('Update user contents')
+      const contents = { notion: data.pages }
       if (userContents) {
-        db.update<UserContent>(USER_CONTENTS_PATH, user.uid, { notion: data.pages })
+        db.update<UserContent>(USER_CONTENTS_PATH, user.uid, contents)
       } else {
-        db.set<UserContent>(USER_CONTENTS_PATH, user.uid, { notion: data.pages })
+        db.set<UserContent>(USER_CONTENTS_PATH, user.uid, contents)
       }
+      setUserContents((prev) => ({
+        notion: contents.notion,
+        createdAt: prev?.createdAt || new Date(),
+        updatedAt: prev?.updatedAt || new Date(),
+      }))
     } else if (data?.success === false || error) {
       console.error('Fail to fetch user content')
     }
