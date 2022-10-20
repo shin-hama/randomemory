@@ -42,11 +42,11 @@ const NoteCard: React.FC<Props> = ({ pageId }) => {
       <CardContent>
         <Stack spacing={2} divider={<Divider />}>
           {page ? (
-            <Box height="22rem" overflow="hidden" sx={{ overflowWrap: 'break-word' }}>
+            <Box maxHeight="30rem" overflow="auto" sx={{ overflowWrap: 'break-word' }}>
               <ReactMarkdown>{page.body || ''}</ReactMarkdown>
             </Box>
           ) : (
-            <Skeleton variant="rectangular" height="10rem" animation="wave" />
+            <Skeleton variant="rectangular" height="20rem" animation="wave" />
           )}
           <Stack spacing={2}>
             {page ? (
