@@ -19,7 +19,7 @@ export const createCustomToken = async (uid: string): Promise<string> => {
  */
 export const verifyUserToken = async (req: NextApiRequest) => {
   try {
-    const token = req.headers.authorization || 'token'
+    const token = req.headers.authorization || ''
     if (token) {
       return await getAuth(admin).verifyIdToken(token)
     } else {
