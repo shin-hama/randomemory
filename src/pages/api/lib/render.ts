@@ -157,18 +157,15 @@ function renderBlock(block: BlockObject): string {
         }
         break
       case 'to_do':
-      case 'synced_block':
       case 'column':
-      case 'child_page':
-      case 'child_database':
-      case 'template':
+      case 'column_list':
       case 'table':
       case 'table_row':
         return ''
       default:
-        return null
+        return ''
     }
-    return ''
+    return null
   }
 
   const visit = (node: BlockObject) => {
