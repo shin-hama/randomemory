@@ -60,7 +60,7 @@ export const useUserContents = () => {
       setUserContents((prev) => ({
         notion: contents.notion,
         createdAt: prev?.createdAt || new Date(),
-        updatedAt: prev?.updatedAt || new Date(),
+        updatedAt: new Date(),
       }))
     } else if (data?.success === false || error) {
       console.error('Fail to fetch user content')

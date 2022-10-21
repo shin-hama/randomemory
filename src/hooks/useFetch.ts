@@ -16,7 +16,6 @@ export const useFetch = <T>(
 
           throw error
         }
-
         return await res.json()
       } catch (e) {
         console.error(e)

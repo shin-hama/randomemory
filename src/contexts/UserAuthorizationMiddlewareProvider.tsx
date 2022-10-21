@@ -14,22 +14,15 @@ const useAuthorization: Middleware = (useSWRNext) => {
    * ログインしていなければ、token なしで request
    */
   return (key, fetcher, config): SWRResponse => {
-    const wrappedFetcher: BareFetcher<any> = (...args) => {
+    const wrappedFetcher: BareFetcher<any> = async (...args) => {
       if (user) {
-        user
-          .getIdToken()
-          .then((token) => {
-            // headers に firebase auth の token を付与する
-            return fetcher?.(...args, {
-              headers: {
-                authorization: token,
-              },
-            })
-          })
-          .catch((e) => {
-            console.error(e)
-            return fetcher?.(...args)
-          })
+        const token = await user.getIdToken()
+
+        return fetcher?.(...args, {
+          headers: {
+            authorization: token,
+          },
+        })
       } else {
         return fetcher?.(...args)
       }
