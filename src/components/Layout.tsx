@@ -1,16 +1,19 @@
 import * as React from 'react'
 import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { useUser } from '../contexts/UserAuthorizationProvider'
 import { useLogin } from '../hooks/useLogin'
 import { useRouter } from 'next/router'
+import Head, { HeadProps } from './Head'
 
-type Props = {
+type Props = HeadProps & {
   children?: React.ReactNode
 }
-const Layout: React.FC<Props> = ({ children }) => {
+const Layout: React.FC<Props> = ({ children, ...heads }) => {
   const [user, auth] = useUser()
   const login = useLogin()
 
@@ -24,6 +27,7 @@ const Layout: React.FC<Props> = ({ children }) => {
 
   return (
     <>
+      <Head {...heads} />
       <AppBar color="inherit">
         <Toolbar>
           <Typography variant="h4">Reminder Note</Typography>
@@ -42,6 +46,15 @@ const Layout: React.FC<Props> = ({ children }) => {
       </AppBar>
       <Toolbar />
       {children}
+      <footer>
+        <Box pt={8}>
+          <Stack alignItems="center">
+            <Typography variant="subtitle1" color="GrayText">
+              © {new Date().getFullYear()} Coppla. All rights reserved.
+            </Typography>
+          </Stack>
+        </Box>
+      </footer>
     </>
   )
 }
