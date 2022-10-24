@@ -16,7 +16,7 @@ export const useLogin = (): UseLogin => {
         const result = (await (await fetch('api/login')).json()) as LoginResponse
 
         if (result.customToken) {
-          auth.signInWithCustomToken(result.customToken)
+          await auth.signInWithCustomToken(result.customToken)
         } else {
           window.open(NOTION_LOGIN_URL, '_self')
         }
