@@ -26,8 +26,9 @@ const Callback: NextPage = () => {
           console.error(e)
         })
         .finally(() => router.push('/'))
-    } else {
-      console.log('error')
+    } else if (data?.success === false || error) {
+      console.error('error')
+      console.error(data?.error || error?.message)
       router.push('/')
     }
   }, [auth, data, db, error, router])
