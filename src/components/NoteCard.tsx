@@ -62,7 +62,7 @@ const NoteCard: React.FC<Props> = ({ pageId }) => {
               sx={{
                 overflowX: 'scroll',
                 scrollbarWidth: 'none',
-                '& ::-webkit-scrollbar': {
+                '&::-webkit-scrollbar': {
                   display: 'none',
                 },
               }}
