@@ -30,6 +30,7 @@ export default async function oauth(
     const body = {
       grant_type: 'authorization_code',
       code,
+      redirect_uri: req.query.redirect_uri,
     }
 
     await fetch(uri, {
