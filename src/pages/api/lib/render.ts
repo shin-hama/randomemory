@@ -35,7 +35,7 @@ export function renderProperty(content: PropertyObject): Array<string> {
             return start
           }
         } else {
-          return
+          return ''
         }
       }
       case 'formula':
@@ -49,7 +49,7 @@ export function renderProperty(content: PropertyObject): Array<string> {
           case 'string':
             return node.formula.string
           default:
-            throw Error(`Not implemented error: node.formula.type: ${node}`)
+            return ''
         }
       case 'relation':
         return `${node.relation.length} relations`
@@ -73,7 +73,7 @@ export function renderProperty(content: PropertyObject): Array<string> {
       case 'checkbox':
         return node.checkbox.toString()
       case 'url':
-        return `[${node.url}](${node.url})`
+        return node.url
       case 'email':
         return node.email
       case 'phone_number':
