@@ -56,7 +56,17 @@ const NoteCard: React.FC<Props> = ({ pageId }) => {
             ) : (
               <Skeleton animation="wave" width="40%" />
             )}
-            <Stack direction="row" spacing={1}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                overflowX: 'scroll',
+                scrollbarWidth: 'none',
+                '& ::-webkit-scrollbar': {
+                  display: 'none',
+                },
+              }}
+            >
               {page
                 ? page.properties.map((prop) => <Chip key={prop} label={prop} />)
                 : [...Array(3)].map((_, i) => (
