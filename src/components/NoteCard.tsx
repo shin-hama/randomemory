@@ -18,15 +18,27 @@ import { useUserContents } from '../hooks/useUserContent'
 
 type Props = {
   pageId?: string
+  onLoading: () => void
+  onLoaded: () => void
 }
-const NoteCard: React.FC<Props> = ({ pageId }) => {
-  const { data: page, error } = useFetch<PageContentResponse>(
-    pageId ? `api/notion/pages/${pageId}` : null,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
+const NoteCard: React.FC<Props> = ({ pageId, onLoading, onLoaded }) => {
+  const {
+    data: page,
+    error,
+    isValidating,
+  } = useFetch<PageContentResponse>(pageId ? `api/notion/pages/${pageId}` : null, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  })
+
+  React.useEffect(() => {
+    if (isValidating) {
+      onLoading()
+    } else {
+      onLoaded()
     }
-  )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isValidating])
 
   const [, refetch] = useUserContents()
 
