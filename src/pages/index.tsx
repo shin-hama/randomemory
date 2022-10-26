@@ -42,7 +42,8 @@ const Home: NextPage = () => {
       if (i !== -1) {
         prev.splice(i, 1)
       }
-      return prev
+
+      return [...prev]
     })
   }, [])
 
