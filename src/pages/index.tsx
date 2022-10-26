@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
 import type { NextPage } from 'next'
 
 import Layout from '../components/Layout'
@@ -14,7 +15,10 @@ import Logins from '../components/Logins'
 const Home: NextPage = () => {
   const [pageIds, setPageIds] = React.useState<Array<string>>([])
   const [loadings, setLoadings] = React.useState<Array<boolean>>([])
-  const loadingAny = React.useMemo(() => loadings.every((v) => v), [loadings])
+  const loadingAny = React.useMemo(
+    () => loadings.length > 0 && loadings.every((v) => v),
+    [loadings]
+  )
   const [userContents] = useUserContents()
   const [user] = useUser()
 
@@ -54,22 +58,24 @@ const Home: NextPage = () => {
       {user ? (
         <Box sx={{ py: 6, background: (theme) => theme.palette.grey[100] }}>
           <Container>
-            <Grid container spacing={1}>
-              {pageIds.map((pageId) => (
-                <Grid item key={pageId} xs={12} sm={6}>
-                  <NoteCard
-                    key={pageId}
-                    pageId={pageId}
-                    onLoading={handleLoading}
-                    onLoaded={handleLoaded}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+            <Stack spacing={2} alignItems="center">
+              <Grid container spacing={1}>
+                {pageIds.map((pageId) => (
+                  <Grid item key={pageId} xs={12} sm={6}>
+                    <NoteCard
+                      key={pageId}
+                      pageId={pageId}
+                      onLoading={handleLoading}
+                      onLoaded={handleLoaded}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+              <Button variant="outlined" disabled={loadingAny} onClick={setRandomIds}>
+                {loadingAny ? 'Loading' : 'Refresh'}
+              </Button>
+            </Stack>
           </Container>
-          <Button variant="outlined" disabled={loadingAny} onClick={setRandomIds}>
-            {loadingAny ? 'Loading' : 'Refresh'}
-          </Button>
         </Box>
       ) : (
         <Container maxWidth="xs" sx={{ py: 6 }}>
