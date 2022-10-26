@@ -12,7 +12,7 @@ import Logins from '../components/Logins'
 
 const Home: NextPage = () => {
   const [pageIds, setPageIds] = React.useState<Array<string>>([])
-  const userContents = useUserContents()
+  const [userContents] = useUserContents()
   const [user] = useUser()
 
   React.useEffect(() => {

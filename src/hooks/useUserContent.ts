@@ -1,5 +1,7 @@
-import { FirestoreDataConverter } from 'firebase/firestore'
 import * as React from 'react'
+import { FirestoreDataConverter } from 'firebase/firestore'
+import { useSWRConfig } from 'swr'
+
 import { useUser } from '../contexts/UserAuthorizationProvider'
 import { InitNotionResponse } from '../pages/api/notion/initialize'
 import { UserContent } from '../types/models'
@@ -20,6 +22,7 @@ const UserContentConverter: FirestoreDataConverter<UserContent> = {
   },
 }
 
+const INIT_NOTION_PATH = '/api/notion/initialize'
 const USER_CONTENTS_PATH = 'content/v1/users'
 
 export const useUserContents = () => {
@@ -39,15 +42,16 @@ export const useUserContents = () => {
     return user && (existsNotion === false || needUpdate)
   }, [user, userContents])
 
-  const { data, error } = useFetch<InitNotionResponse>(
-    shouldInit ? '/api/notion/initialize' : null,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  )
+  const { mutate } = useSWRConfig()
+  const { data, error } = useFetch<InitNotionResponse>(shouldInit ? INIT_NOTION_PATH : null, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  })
 
+  /**
+   * Init に成功したら DB を更新する
+   */
   React.useEffect(() => {
     if (data?.success && user) {
       console.log('Update user contents')
@@ -68,6 +72,9 @@ export const useUserContents = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
+  /**
+   * ユーザーがログインしたら、DB から Contents List を取得する
+   */
   React.useEffect(() => {
     if (user) {
       console.log('fetch user content')
@@ -85,5 +92,9 @@ export const useUserContents = () => {
     }
   }, [db, user])
 
-  return userContents
+  const refetch = React.useCallback(() => {
+    mutate(INIT_NOTION_PATH)
+  }, [mutate])
+
+  return [userContents, refetch] as const
 }

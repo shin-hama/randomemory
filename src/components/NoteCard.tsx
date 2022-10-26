@@ -14,6 +14,7 @@ import dayjs from 'dayjs'
 
 import { useFetch } from '../hooks/useFetch'
 import { PageContentResponse } from '../pages/api/notion/pages/[id]'
+import { useUserContents } from '../hooks/useUserContent'
 
 type Props = {
   pageId?: string
@@ -26,6 +27,14 @@ const NoteCard: React.FC<Props> = ({ pageId }) => {
       revalidateOnFocus: false,
     }
   )
+
+  const [, refetch] = useUserContents()
+
+  React.useEffect(() => {
+    if (page?.success === false) {
+      refetch()
+    }
+  }, [page?.success, refetch])
 
   if (error || page?.success === false) {
     return (
