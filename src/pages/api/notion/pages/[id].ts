@@ -6,23 +6,6 @@ import { BlockObject, PageObject } from '../types'
 import { createUserClient } from '../util'
 import { verifyUserToken } from '../../lib/firebaseAuth'
 
-export default async function pages(req: NextApiRequest, res: NextApiResponse) {
-  const user = await verifyUserToken(req)
-  if (!user) {
-    res.status(401).json({ success: false })
-  }
-
-  const client = await createUserClient(req)
-  const [pageId] = [req.query.id].flat(1)
-
-  if (client && pageId) {
-    const result = await getPageContents(client, pageId)
-    res.status(200).json({ ...result })
-  } else {
-    res.status(400).json({ success: false })
-  }
-}
-
 export type PageContentResponse =
   | {
       success: true
@@ -33,7 +16,34 @@ export type PageContentResponse =
     }
   | {
       success: false
+      message: string
     }
+
+export default async function pages(
+  req: NextApiRequest,
+  res: NextApiResponse<PageContentResponse>
+) {
+  const user = await verifyUserToken(req)
+  if (!user) {
+    const message = 'User is not authorized'
+    console.error(message)
+    res.status(401).json({ success: false, message })
+    return
+  }
+
+  const client = await createUserClient(req)
+  const [pageId] = [req.query.id].flat(1)
+
+  if (client && pageId) {
+    const result = await getPageContents(client, pageId)
+    res.status(200).json({ ...result })
+  } else {
+    const message = `{client: ${client}, pageId: ${pageId}}`
+    console.warn(`Bad Request: ${message}`)
+    res.status(400).json({ success: false, message })
+  }
+}
+
 const getPageContents = async (notion: Client, pageId: string): Promise<PageContentResponse> => {
   try {
     const page = await notion.pages.retrieve({
@@ -53,11 +63,13 @@ const getPageContents = async (notion: Client, pageId: string): Promise<PageCont
         body,
       }
     } else {
-      return { success: false }
+      const message = 'page is not full'
+      return { success: false, message }
     }
   } catch (error) {
+    const message = `An Error has occurred: ${error}`
     console.error(error)
-    return { success: false }
+    return { success: false, message }
   }
 }
 
