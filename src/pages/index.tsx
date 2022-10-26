@@ -23,14 +23,14 @@ const Home: NextPage = () => {
   const [user] = useUser()
 
   const setRandomIds = React.useCallback(() => {
-    if (pageIds.length === 0 && userContents?.notion) {
+    if (userContents?.notion) {
       const cloned = [...userContents?.notion]
 
       setPageIds(
         [...Array(2)].map(() => cloned.splice(Math.floor(Math.random() * cloned.length), 1)[0])
       )
     }
-  }, [pageIds.length, userContents?.notion])
+  }, [userContents?.notion])
 
   const handleLoading = React.useCallback(() => {
     setLoadings((prev) => {
@@ -46,7 +46,11 @@ const Home: NextPage = () => {
     })
   }, [])
 
-  React.useEffect(setRandomIds, [setRandomIds])
+  React.useEffect(() => {
+    if (pageIds.length === 0) {
+      setRandomIds()
+    }
+  }, [pageIds.length, setRandomIds])
 
   if (user === undefined) {
     // ログイン状態の検証中
