@@ -18,8 +18,8 @@ import { useUserContents } from '../hooks/useUserContent'
 
 type Props = {
   pageId?: string
-  onLoading: () => void
-  onLoaded: () => void
+  onLoading?: (id: string) => void
+  onLoaded?: (id: string) => void
 }
 const NoteCard: React.FC<Props> = ({ pageId, onLoading, onLoaded }) => {
   const {
@@ -32,10 +32,14 @@ const NoteCard: React.FC<Props> = ({ pageId, onLoading, onLoaded }) => {
   })
 
   React.useEffect(() => {
+    if (!pageId) {
+      return
+    }
+
     if (isValidating) {
-      onLoading()
+      onLoading?.(pageId)
     } else {
-      onLoaded()
+      onLoaded?.(pageId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isValidating])

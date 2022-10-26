@@ -14,7 +14,7 @@ import Logins from '../components/Logins'
 
 const Home: NextPage = () => {
   const [pageIds, setPageIds] = React.useState<Array<string>>([])
-  const [loadings, setLoadings] = React.useState<Array<boolean>>([])
+  const [loadings, setLoadings] = React.useState<Array<string>>([])
   const loadingAny = React.useMemo(
     () => loadings.length > 0 && loadings.every((v) => v),
     [loadings]
@@ -32,16 +32,16 @@ const Home: NextPage = () => {
     }
   }, [userContents?.notion])
 
-  const handleLoading = React.useCallback(() => {
-    setLoadings((prev) => {
-      prev.push(true)
-      return prev
-    })
+  const handleLoading = React.useCallback((id: string) => {
+    setLoadings((prev) => [...new Set([...prev, id])])
   }, [])
 
-  const handleLoaded = React.useCallback(() => {
+  const handleLoaded = React.useCallback((id: string) => {
     setLoadings((prev) => {
-      prev.pop()
+      const i = prev.findIndex((e) => e === id)
+      if (i !== -1) {
+        prev.splice(i, 1)
+      }
       return prev
     })
   }, [])
