@@ -27,7 +27,9 @@ const Home: NextPage = () => {
       const cloned = [...userContents?.notion]
 
       setPageIds(
-        [...Array(2)].map(() => cloned.splice(Math.floor(Math.random() * cloned.length), 1)[0])
+        [...Array(2)]
+          .map(() => cloned.splice(Math.floor(Math.random() * cloned.length), 1)[0])
+          .filter((item) => !item === false)
       )
     }
   }, [userContents?.notion])
