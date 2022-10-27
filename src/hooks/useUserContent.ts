@@ -54,7 +54,6 @@ export const useUserContents = () => {
    */
   React.useEffect(() => {
     if (data?.success && user) {
-      console.log('Update user contents')
       const contents = { notion: data.pages }
       if (userContents) {
         db.update<UserContent>(USER_CONTENTS_PATH, user.uid, contents)
@@ -77,7 +76,6 @@ export const useUserContents = () => {
    */
   React.useEffect(() => {
     if (user) {
-      console.log('fetch user content')
       db.get(USER_CONTENTS_PATH, user.uid, UserContentConverter)
         .then((result) => {
           setUserContents(result || null)
