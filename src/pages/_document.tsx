@@ -6,7 +6,7 @@ export default function Document() {
     <Html lang="ja">
       <Head>
         <meta charSet="utf-8" />
-        <meta name="description" content="ランダムにノートを振り返る「Reminder Note」" />
+        <meta name="description" content="ランダムにノートを振り返る「RandoMemory」" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link

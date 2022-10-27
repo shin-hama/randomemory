@@ -59,7 +59,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Layout title="Reminder Not">
+    <Layout title="RandoMemory">
       {user ? (
         <Box sx={{ py: 6, background: (theme) => theme.palette.grey[100] }}>
           <Container>

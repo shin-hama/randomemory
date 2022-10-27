@@ -30,7 +30,7 @@ const Layout: React.FC<Props> = ({ children, ...heads }) => {
       <Head {...heads} />
       <AppBar color="inherit">
         <Toolbar>
-          <Typography variant="h4">Reminder Note</Typography>
+          <Typography variant="h4">RandoMemory</Typography>
           <div style={{ flexGrow: 1 }} />
           {user ? (
             <>
