@@ -10,6 +10,14 @@ const nextConfig = {
 
     return config
   },
+  async rewrites() {
+    return [
+      {
+        source: '/privacy-policy',
+        destination: '/public/privacy-policy.html',
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
