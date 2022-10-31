@@ -35,7 +35,7 @@ const Layout: React.FC<Props> = ({ children, ...heads }) => {
                 Privacy Policy
               </Link>
               <Link href="terms" sx={{ textDecoration: 'none' }}>
-                Terms of Use
+                Terms
               </Link>
             </Stack>
             <Typography variant="subtitle1" color="GrayText">
