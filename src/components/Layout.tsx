@@ -29,7 +29,7 @@ const Layout: React.FC<Props> = ({ children, ...heads }) => {
       {children}
       <footer>
         <Box pt={8}>
-          <Stack alignItems="center">
+          <Stack alignItems="center" spacing={1}>
             <Stack direction="row" spacing={2}>
               <Link href="privacy-policy" sx={{ textDecoration: 'none' }}>
                 Privacy Policy
