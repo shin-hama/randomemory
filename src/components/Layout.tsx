@@ -57,7 +57,7 @@ const Layout: React.FC<Props> = ({ children, ...heads }) => {
               <Link href="privacy-policy" sx={{ textDecoration: 'none' }}>
                 Privacy Policy
               </Link>
-              <Link href="terms-of-use" sx={{ textDecoration: 'none' }}>
+              <Link href="terms" sx={{ textDecoration: 'none' }}>
                 Terms of Use
               </Link>
             </Stack>
