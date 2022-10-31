@@ -18,9 +18,11 @@ const Layout: React.FC<Props> = ({ children, ...heads }) => {
       <Head {...heads} />
       <AppBar color="inherit">
         <Toolbar>
-          <Typography variant="h4" fontWeight="bold">
-            RandoMemory
-          </Typography>
+          <Link href="/" sx={{ color: 'black', textDecoration: 'none' }}>
+            <Typography variant="h4" fontWeight="bold">
+              RandoMemory
+            </Typography>
+          </Link>
           <div style={{ flexGrow: 1 }} />
           <UserAvatar />
         </Toolbar>
