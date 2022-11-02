@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
-import { getAnalytics } from 'firebase/analytics'
-import { getApps, FirebaseOptions, initializeApp } from 'firebase/app'
-import { initializeFirestore } from 'firebase/firestore'
+import { getAnalytics, initializeAnalytics } from 'firebase/analytics'
+import { FirebaseOptions, getApp, getApps, initializeApp } from 'firebase/app'
+import { getAuth, initializeAuth } from 'firebase/auth'
+import { getFirestore, initializeFirestore } from 'firebase/firestore'
 
 if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
   throw new Error('Firebase API Key is not defined on environment')
@@ -17,6 +18,23 @@ const firebaseConfig: FirebaseOptions = {
 }
 
 // Initialize Firebase
-export const app = getApps()[0] || initializeApp(firebaseConfig)
-export const db = initializeFirestore(app, { ignoreUndefinedProperties: true })
-export const analytics = getAnalytics(app)
+if (typeof window !== 'undefined' && getApps().length === 0) {
+  console.log('init firebase')
+  const app = initializeApp(firebaseConfig)
+
+  initializeAnalytics(app)
+  initializeAuth(app)
+  initializeFirestore(app, { ignoreUndefinedProperties: true })
+}
+
+const getFirebase = () => {
+  try {
+    return getApp()
+  } catch {
+    return initializeApp(firebaseConfig)
+  }
+}
+
+export const analytics = typeof window !== 'undefined' && getAnalytics(getFirebase())
+export const auth = getAuth(getFirebase())
+export const db = getFirestore(getFirebase())

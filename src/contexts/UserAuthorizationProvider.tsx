@@ -1,12 +1,7 @@
 import * as React from 'react'
-import {
-  getAuth,
-  onAuthStateChanged,
-  signInWithCustomToken,
-  updateProfile,
-  User,
-} from 'firebase/auth'
-import { app } from '../configs/firebase'
+import { onAuthStateChanged, signInWithCustomToken, updateProfile, User } from 'firebase/auth'
+
+import { auth } from '../configs/firebase'
 
 const UserAuthorizationContext = React.createContext<User | null | undefined>(undefined)
 
@@ -17,7 +12,7 @@ export const UserAuthorizationProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = React.useState<User | null>()
 
   React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(getAuth(), (userInfo) => {
+    const unsubscribe = onAuthStateChanged(auth, (userInfo) => {
       setUser(userInfo)
     })
 
@@ -38,13 +33,13 @@ export const useUser = () => {
   const actions = React.useMemo(() => {
     return {
       signInWithCustomToken: async (token: string) => {
-        return await signInWithCustomToken(getAuth(app), token)
+        return await signInWithCustomToken(auth, token)
       },
       signOut: async () => {
-        await getAuth(app).signOut()
+        await auth.signOut()
       },
       updateProfile: async (updateUser: Partial<Pick<User, 'displayName' | 'photoURL'>>) => {
-        const user = getAuth(app).currentUser
+        const user = auth.currentUser
         if (user) {
           await updateProfile(user, updateUser)
         }

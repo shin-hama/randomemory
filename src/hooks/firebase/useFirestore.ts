@@ -4,12 +4,13 @@ import {
   DocumentData,
   FirestoreDataConverter,
   getDoc,
-  getFirestore,
   serverTimestamp,
   setDoc,
   updateDoc,
 } from 'firebase/firestore'
+
 import { ModelBase } from '../../types/models'
+import { db } from '../../configs/firebase'
 
 interface Firestore {
   set: <T extends ModelBase>(
@@ -28,7 +29,7 @@ export const useFirestore = () => {
         id: string,
         data: Omit<T, keyof ModelBase>
       ) => {
-        const ref = doc(getFirestore(), path, id)
+        const ref = doc(db, path, id)
         await setDoc(ref, {
           ...data,
           createdAt: serverTimestamp(),
@@ -36,13 +37,13 @@ export const useFirestore = () => {
         })
       },
       get: async <T>(path: string, id: string, converter: FirestoreDataConverter<T>) => {
-        const ref = doc(getFirestore(), path, id).withConverter(converter)
+        const ref = doc(db, path, id).withConverter(converter)
         const snapshot = await getDoc(ref)
 
         return snapshot.data()
       },
       update: async <T extends DocumentData>(path: string, id: string, data: Partial<T>) => {
-        const ref = doc(getFirestore(), path, id)
+        const ref = doc(db, path, id)
         await updateDoc(ref, {
           ...data,
           updatedAt: serverTimestamp(),
