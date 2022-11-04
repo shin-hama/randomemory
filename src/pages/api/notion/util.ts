@@ -10,7 +10,7 @@ const createClient = (token: string) => {
 
 export const createUserClient = async (req: NextApiRequest) => {
   const token = getSecrets(req, 'notion')
-  console.log(token)
+
   if (isValidAccessToken(token)) {
     try {
       const client = createClient(token.access_token)

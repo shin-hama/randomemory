@@ -28,11 +28,11 @@ const Callback: NextPage = () => {
         .catch((e) => {
           console.error(e)
         })
-        .finally(() => router.push('/'))
+        .finally(() => router.replace('/'))
     } else if (data?.success === false || error) {
       console.error('error')
       console.error(data?.error || error?.message)
-      router.push('/')
+      router.replace('/')
     }
   }, [auth, data, db, error, router])
 
