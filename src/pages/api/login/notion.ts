@@ -43,6 +43,7 @@ export default async function oauth(
     })
       .then(async (result) => {
         const value = (await result.json()) as AccessTokenResponse
+        console.log(value)
 
         if (isErrorResponse(value)) {
           res?.status(400).json({ success: false, error: value.error })

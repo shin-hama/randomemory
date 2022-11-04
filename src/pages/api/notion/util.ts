@@ -12,9 +12,14 @@ export const createUserClient = async (req: NextApiRequest) => {
   const token = getSecrets(req, 'notion')
 
   if (isValidAccessToken(token)) {
-    const client = createClient(token.access_token)
-    await client.users.me({})
-    return client
+    try {
+      const client = createClient(token.access_token)
+      await client.users.me({})
+      return client
+    } catch {
+      // throw exception when access token is invalid
+      return null
+    }
   }
 
   return null
