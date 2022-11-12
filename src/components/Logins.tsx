@@ -12,6 +12,7 @@ const Logins = () => {
 
   return (
     <Stack alignItems="stretch" spacing={4}>
+      <button onClick={() => login.provider('twitter')}>twitter</button>
       <Typography variant="h5" textAlign="center">
         Sign up Your Account
       </Typography>

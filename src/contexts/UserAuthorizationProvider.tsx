@@ -1,8 +1,11 @@
 import * as React from 'react'
 import {
+  AuthProvider,
   getAuth,
+  getRedirectResult,
   onAuthStateChanged,
   signInWithCustomToken,
+  signInWithRedirect,
   updateProfile,
   User,
 } from 'firebase/auth'
@@ -39,6 +42,12 @@ export const useUser = () => {
     return {
       signInWithCustomToken: async (token: string) => {
         return await signInWithCustomToken(getAuth(app), token)
+      },
+      signInWithRedirect: async (provider: AuthProvider) => {
+        await signInWithRedirect(getAuth(app), provider)
+      },
+      getRedirectResult: async () => {
+        return await getRedirectResult(getAuth(app))
       },
       signOut: async () => {
         await getAuth(app).signOut()
