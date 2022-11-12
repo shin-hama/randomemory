@@ -8,13 +8,17 @@ import { useRouter } from 'next/router'
 
 type SUPPORTED_PROVIDER = 'twitter'
 
+const twitter = new TwitterAuthProvider()
+twitter.addScope('tweet.read')
+twitter.addScope('users.read')
+
 type Provider = {
   provider: AuthProvider
   redirectUrl: string
 }
 const providers: Record<SUPPORTED_PROVIDER, Provider> = {
   twitter: {
-    provider: new TwitterAuthProvider(),
+    provider: twitter,
     redirectUrl: '/login/twitter',
   },
 }

@@ -17,6 +17,7 @@ const TwitterCallback = () => {
         if (result) {
           // This is the signed-in user
           const user = result.user
+
           // This gives you a Facebook Access Token.
           const credential = TwitterAuthProvider.credentialFromResult(result)
           const token = credential?.accessToken
