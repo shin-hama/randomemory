@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { TwitterAuthProvider } from 'firebase/auth'
 
 import { useUser } from '../../contexts/UserAuthorizationProvider'
 import { useRouter } from 'next/router'
@@ -16,18 +15,17 @@ const TwitterCallback = () => {
         if (result) {
           // This is the signed-in user
           const user = result.user
+          console.log(user)
+          const token = await user.getIdToken()
 
-          // This gives you a Facebook Access Token.
-          const credential = TwitterAuthProvider.credentialFromResult(result)
-          const token = credential?.accessToken
-          const test =
-            token &&
-            (await fetch('/api/twitter/initialize', {
+          if (token) {
+            const test = await fetch('/api/twitter/initialize', {
               headers: {
                 authorization: token,
               },
-            }))
-          console.log(test)
+            })
+            console.log(await test.json())
+          }
           router.replace('/')
         } else {
           console.log('Fail to get result')

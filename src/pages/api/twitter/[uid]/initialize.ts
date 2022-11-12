@@ -1,19 +1,13 @@
-import { ClientRequest } from 'http'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Client from 'twitter-api-sdk'
 
-import { verifyUserToken } from '../lib/firebaseAuth'
+import { verifyUserToken } from '../../lib/firebaseAuth'
 
 const createUserClient = (req: NextApiRequest) => {
-  const token = req.headers.authorization
-
-  if (token) {
-    return new Client(token)
-  } else {
-    return null
-  }
+  return new Client(process.env.TWITTER_BEARER_TOKEN || '')
 }
-export type InitNotionResponse =
+
+export type InitTwitterResponse =
   | {
       tweets: Array<string>
       success: true
@@ -23,12 +17,15 @@ export type InitNotionResponse =
     }
 export default async function initialize(
   req: NextApiRequest,
-  res: NextApiResponse<InitNotionResponse>
+  res: NextApiResponse<InitTwitterResponse>
 ) {
   const client = createUserClient(req)
+  const user = await verifyUserToken(req)
 
-  if (client) {
-    const result = await client.users.findMyUser()
+  const [uid] = [req.query.uid].flat(1)
+  console.log(uid)
+  if (client && user && uid) {
+    const result = await client.tweets.usersIdTweets(uid)
     // const result = await client.tweets.usersIdTweets()
     res.status(200).json({ tweets: result, success: true })
   } else {

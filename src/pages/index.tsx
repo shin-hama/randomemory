@@ -11,6 +11,7 @@ import NoteCard from '../components/NoteCard'
 import { useUserContents } from '../hooks/useUserContent'
 import { useUser } from '../contexts/UserAuthorizationProvider'
 import Logins from '../components/Logins'
+import { useTwitterData } from '../hooks/useTwitterData'
 
 const Home: NextPage = () => {
   const [pageIds, setPageIds] = React.useState<Array<string>>([])
@@ -21,6 +22,7 @@ const Home: NextPage = () => {
   )
   const [userContents] = useUserContents()
   const [user] = useUser()
+  const t = useTwitterData()
 
   const setRandomIds = React.useCallback(() => {
     if (userContents?.notion) {
