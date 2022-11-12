@@ -13,7 +13,6 @@ const TwitterCallback = () => {
     auth
       .getRedirectResult()
       .then(async (result) => {
-        console.log(result)
         if (result) {
           // This is the signed-in user
           const user = result.user
@@ -21,7 +20,14 @@ const TwitterCallback = () => {
           // This gives you a Facebook Access Token.
           const credential = TwitterAuthProvider.credentialFromResult(result)
           const token = credential?.accessToken
-
+          const test =
+            token &&
+            (await fetch('/api/twitter/initialize', {
+              headers: {
+                authorization: token,
+              },
+            }))
+          console.log(test)
           router.replace('/')
         } else {
           console.log('Fail to get result')
