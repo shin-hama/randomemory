@@ -41,6 +41,7 @@ const getTweet = async (tweetId: string): Promise<Content | null> => {
     'user.fields': ['name'],
     expansions: ['author_id'],
   })
+
   if (result.data && result.includes?.users) {
     const userName = result.includes?.users[0].username
     return {

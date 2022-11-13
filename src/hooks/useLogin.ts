@@ -6,7 +6,11 @@ import { useUser } from '../contexts/UserAuthorizationProvider'
 import { LoginResponse } from '../pages/api/login'
 import { useRouter } from 'next/router'
 
-type SUPPORTED_PROVIDER = 'twitter'
+const fireAuthProviders = ['twitter'] as const
+type FireAuthProviders = typeof fireAuthProviders[number]
+
+export const supportedProviders = ['notion', ...fireAuthProviders] as const
+export type SupportedProviders = typeof supportedProviders[number]
 
 const twitter = new TwitterAuthProvider()
 twitter.addScope('tweet.read')
@@ -16,7 +20,7 @@ type Provider = {
   provider: AuthProvider
   redirectUrl: string
 }
-const providers: Record<SUPPORTED_PROVIDER, Provider> = {
+const providers: Record<FireAuthProviders, Provider> = {
   twitter: {
     provider: twitter,
     redirectUrl: '/login/twitter',
@@ -25,7 +29,7 @@ const providers: Record<SUPPORTED_PROVIDER, Provider> = {
 
 interface UseLogin {
   notion: () => Promise<void>
-  provider: (name: SUPPORTED_PROVIDER) => Promise<void>
+  provider: (name: FireAuthProviders) => Promise<void>
 }
 export const useLogin = (): UseLogin => {
   const [, auth] = useUser()
@@ -42,7 +46,7 @@ export const useLogin = (): UseLogin => {
           window.open(NOTION_LOGIN_URL, '_self')
         }
       },
-      provider: async (name: SUPPORTED_PROVIDER) => {
+      provider: async (name: FireAuthProviders) => {
         const provider = providers[name]
         const result = await router.push(provider.redirectUrl)
         if (result) {

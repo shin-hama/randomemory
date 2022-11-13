@@ -2,11 +2,9 @@ import * as React from 'react'
 
 import { useTwitterData } from './useTwitterData'
 import { useNotionData } from './useNotionData'
+import { SupportedProviders } from './useLogin'
 
-export type UserContent = {
-  notion: Array<string>
-  twitter: Array<string>
-}
+export type UserContent = Record<SupportedProviders, Array<string>>
 
 export const useUserContents = () => {
   const [userContents, setUserContents] = React.useState<UserContent | null>(null)
