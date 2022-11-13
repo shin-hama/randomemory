@@ -11,6 +11,7 @@ import NoteCard from '../components/NoteCard'
 import { useUserContents } from '../hooks/useUserContent'
 import { useUser } from '../contexts/UserAuthorizationProvider'
 import Logins from '../components/Logins'
+import TweetCard from '../components/TweetCard'
 
 const Home: NextPage = () => {
   const [pageIds, setPageIds] = React.useState<Array<string>>([])
@@ -62,6 +63,7 @@ const Home: NextPage = () => {
 
   return (
     <Layout title="RandoMemory">
+      <TweetCard tweetId={userContents?.twitter[0]} />
       {user ? (
         <Box sx={{ py: 6, background: (theme) => theme.palette.grey[100] }}>
           <Container>
