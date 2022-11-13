@@ -1,33 +1,30 @@
 import * as React from 'react'
 import { useSWRConfig } from 'swr'
 import { useUser } from '../contexts/UserAuthorizationProvider'
+import { InitNotionResponse } from '../pages/api/notion/initialize'
 
-import { InitTwitterResponse } from '../pages/api/twitter/[uid]/initialize'
 import { useFetch } from './useFetch'
 import { useProviderContents } from './useProviderContents'
 
-export const useTwitterData = () => {
+const INIT_NOTION_PATH = '/api/notion/initialize'
+
+export const useNotionData = () => {
   const [user] = useUser()
   const { mutate } = useSWRConfig()
-  const [contents, update] = useProviderContents('twitter')
+  const [contents, update] = useProviderContents('notion')
 
   const endpoint = React.useMemo<string | null>(() => {
-    const twitterUid = user?.providerData.find((info) => info.providerId === 'twitter.com')?.uid
-
     const now = new Date().getDate()
-    const needUpdate =
-      contents === null || (contents?.updatedAt && now - contents.updatedAt.getDate() !== 0)
+    const needUpdate = contents?.updatedAt && now - contents.updatedAt.getDate() !== 0
 
-    console.log(twitterUid)
-    console.log(needUpdate)
-    if (twitterUid && needUpdate) {
-      return `/api/twitter/${twitterUid}/initialize`
+    if (user && needUpdate) {
+      return INIT_NOTION_PATH
     } else {
       return null
     }
-  }, [contents, user?.providerData])
+  }, [contents?.updatedAt, user])
 
-  const { data, error } = useFetch<InitTwitterResponse>(endpoint, {
+  const { data, error } = useFetch<InitNotionResponse>(endpoint, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -40,7 +37,7 @@ export const useTwitterData = () => {
   React.useEffect(() => {
     if (data?.success) {
       console.log(data)
-      update(data.tweets)
+      update(data.pages)
     }
   }, [data, update])
 
