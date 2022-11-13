@@ -7,6 +7,7 @@ import { InitNotionResponse } from '../pages/api/notion/initialize'
 import { UserContent } from '../types/models'
 import { useFirestore } from './firebase/useFirestore'
 import { useFetch } from './useFetch'
+import { useTwitterData } from './useTwitterData'
 
 const UserContentConverter: FirestoreDataConverter<UserContent> = {
   toFirestore: (data) => {
@@ -29,6 +30,7 @@ export const useUserContents = () => {
   const db = useFirestore()
   const [user] = useUser()
 
+  const [tweets, fetchTweets] = useTwitterData()
   const [userContents, setUserContents] = React.useState<UserContent | null>(null)
 
   const shouldInit = React.useMemo(() => {
@@ -71,6 +73,25 @@ export const useUserContents = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
+  React.useEffect(() => {
+    if (user && tweets) {
+      const contents = { twitter: tweets }
+      if (userContents) {
+        db.update<UserContent>(USER_CONTENTS_PATH, user.uid, contents)
+      } else {
+        db.set<UserContent>(USER_CONTENTS_PATH, user.uid, contents)
+      }
+      setUserContents((prev) => ({
+        twitter: contents.twitter,
+        createdAt: prev?.createdAt || new Date(),
+        updatedAt: new Date(),
+      }))
+    } else if (data?.success === false || error) {
+      console.error('Fail to fetch user content')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tweets])
+
   /**
    * ユーザーがログインしたら、DB から Contents List を取得する
    */
@@ -92,7 +113,8 @@ export const useUserContents = () => {
 
   const refetch = React.useCallback(() => {
     mutate(INIT_NOTION_PATH)
-  }, [mutate])
+    fetchTweets()
+  }, [fetchTweets, mutate])
 
   return [userContents, refetch] as const
 }

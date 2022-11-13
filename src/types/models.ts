@@ -4,4 +4,5 @@ export type ModelBase = {
 }
 export type UserContent = ModelBase & {
   notion?: Array<string>
+  twitter?: Array<string>
 }
