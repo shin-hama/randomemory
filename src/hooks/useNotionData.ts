@@ -15,14 +15,16 @@ export const useNotionData = () => {
 
   const endpoint = React.useMemo<string | null>(() => {
     const now = new Date().getDate()
-    const needUpdate = contents?.updatedAt && now - contents.updatedAt.getDate() !== 0
+    const needUpdate =
+      contents === null || (contents?.updatedAt && now - contents.updatedAt.getDate() !== 0)
 
+    console.log(user && needUpdate)
     if (user && needUpdate) {
       return INIT_NOTION_PATH
     } else {
       return null
     }
-  }, [contents?.updatedAt, user])
+  }, [contents, user])
 
   const { data, error } = useFetch<InitNotionResponse>(endpoint, {
     revalidateIfStale: false,
@@ -36,7 +38,6 @@ export const useNotionData = () => {
 
   React.useEffect(() => {
     if (data?.success) {
-      console.log(data)
       update(data.pages)
     }
   }, [data, update])
