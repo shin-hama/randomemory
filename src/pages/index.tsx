@@ -107,6 +107,7 @@ const Home: NextPage = () => {
               <Button variant="outlined" disabled={loadingAny} onClick={setRandomIds}>
                 {loadingAny ? 'Loading' : 'Refresh'}
               </Button>
+              <Logins />
             </Stack>
           </Container>
         </Box>

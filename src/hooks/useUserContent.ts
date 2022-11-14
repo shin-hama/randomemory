@@ -22,10 +22,6 @@ export const useUserContents = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pages, tweets])
 
-  React.useEffect(() => {
-    console.log(userContents)
-  }, [userContents])
-
   const refetch = React.useCallback(() => {
     fetchPages()
     fetchTweets()

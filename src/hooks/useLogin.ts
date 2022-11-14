@@ -32,7 +32,7 @@ interface UseLogin {
   provider: (name: FireAuthProviders) => Promise<void>
 }
 export const useLogin = (): UseLogin => {
-  const [, auth] = useUser()
+  const [user, auth] = useUser()
   const router = useRouter()
 
   const actions = React.useMemo<UseLogin>(() => {
@@ -41,24 +41,34 @@ export const useLogin = (): UseLogin => {
         const result = (await (await fetch('api/login')).json()) as LoginResponse
 
         if (result.customToken) {
-          await auth.signInWithCustomToken(result.customToken)
+          await auth.signInWithCustomToken(result.customToken, 'notion.so')
         } else {
           window.open(NOTION_LOGIN_URL, '_self')
         }
       },
       provider: async (name: FireAuthProviders) => {
         const provider = providers[name]
-        const result = await router.push(provider.redirectUrl)
-        if (result) {
-          await auth.signInWithRedirect(provider.provider)
+        if (user) {
+          console.log('link exists user')
+          const result = await router.push('/login/link')
+          if (result) {
+            await auth.linkWithOAuthProvider(user, provider.provider)
+          } else {
+            console.error(`Fail to login with ${name}}`)
+          }
         } else {
-          console.error(`Fail to login with ${name}}`)
+          const result = await router.push(provider.redirectUrl)
+          if (result) {
+            await auth.signInWithRedirect(provider.provider)
+          } else {
+            console.error(`Fail to login with ${name}}`)
+          }
         }
       },
     }
 
     return a
-  }, [auth, router])
+  }, [auth, router, user])
 
   return actions
 }

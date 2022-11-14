@@ -3,6 +3,7 @@ import {
   AuthProvider,
   getAuth,
   getRedirectResult,
+  linkWithRedirect,
   onAuthStateChanged,
   signInWithCustomToken,
   signInWithRedirect,
@@ -40,8 +41,12 @@ export const useUser = () => {
 
   const actions = React.useMemo(() => {
     return {
-      signInWithCustomToken: async (token: string) => {
-        return await signInWithCustomToken(getAuth(app), token)
+      linkWithOAuthProvider: async (currentUser: User, provider: AuthProvider) => {
+        await linkWithRedirect(currentUser, provider)
+      },
+      signInWithCustomToken: async (token: string, provider: string) => {
+        const result = await signInWithCustomToken(getAuth(app), token)
+        return result
       },
       signInWithRedirect: async (provider: AuthProvider) => {
         await signInWithRedirect(getAuth(app), provider)

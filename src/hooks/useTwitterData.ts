@@ -18,8 +18,6 @@ export const useTwitterData = () => {
     const needUpdate =
       contents === null || (contents?.updatedAt && now - contents.updatedAt.getDate() !== 0)
 
-    console.log(twitterUid)
-    console.log(needUpdate)
     if (twitterUid && needUpdate) {
       return `/api/twitter/${twitterUid}/initialize`
     } else {
@@ -39,7 +37,6 @@ export const useTwitterData = () => {
 
   React.useEffect(() => {
     if (data?.success) {
-      console.log(data)
       update(data.tweets)
     }
   }, [data, update])

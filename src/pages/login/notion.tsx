@@ -20,9 +20,9 @@ const Callback: NextPage = () => {
   React.useEffect(() => {
     if (data && data.success) {
       auth
-        .signInWithCustomToken(data.token)
-        .then(async () => {
-          await auth.updateProfile({ displayName: data.name })
+        .signInWithCustomToken(data.token, 'notion.so')
+        .then(async (result) => {
+          await auth.updateProfile({ displayName: result.user.displayName || data.name })
           console.log('Success to login')
         })
         .catch((e) => {
