@@ -7,7 +7,7 @@ import { LoginResponse } from '../pages/api/login'
 import { useRouter } from 'next/router'
 
 const fireAuthProviders = ['twitter'] as const
-type FireAuthProviders = typeof fireAuthProviders[number]
+export type FireAuthProviders = typeof fireAuthProviders[number]
 
 export const supportedProviders = ['notion', ...fireAuthProviders] as const
 export type SupportedProviders = typeof supportedProviders[number]

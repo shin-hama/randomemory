@@ -3,25 +3,24 @@ import Icon from '@mui/material/SvgIcon'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import NotionIcon from './icons/notion.svg'
 import TwitterIcon from './icons/twitter.svg'
-import { useLogin } from '../hooks/useLogin'
+import { FireAuthProviders, useLogin } from '../hooks/useLogin'
 import { AsyncButton } from './AsyncButton'
 
 type Provider = {
-  name: string
+  name: FireAuthProviders
   icon: React.ReactNode
 }
 const providers: Array<Provider> = [
   {
-    name: 'Notion',
-    icon: <NotionIcon />,
-  },
-  {
-    name: 'Twitter',
+    name: 'twitter',
     icon: <TwitterIcon />,
   },
 ]
+
+const capitalizeFirstLetter = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 
 const Logins = () => {
   const login = useLogin()
@@ -32,10 +31,14 @@ const Logins = () => {
         Sign up Your Account
       </Typography>
       {providers.map((provider) => (
-        <AsyncButton key={provider.name} variant="outlined" onClick={login.notion}>
+        <AsyncButton
+          key={provider.name}
+          variant="outlined"
+          onClick={() => login.provider(provider.name)}
+        >
           <Stack direction="row" spacing={2} alignItems="center">
             <Icon fontSize="medium">{provider.icon}</Icon>
-            <Typography>Continue with {provider.name}</Typography>
+            <Typography>Continue with {capitalizeFirstLetter(provider.name)}</Typography>
           </Stack>
         </AsyncButton>
       ))}

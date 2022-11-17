@@ -3,11 +3,12 @@ import { FirestoreDataConverter } from 'firebase/firestore'
 import { useFirestore } from './firebase/useFirestore'
 import { SupportedProviders } from './useLogin'
 import { useUser } from '../contexts/UserAuthorizationProvider'
+import { ModelBase } from '../types/models'
 
 type UserData = {
   name: string
 }
-type Profile = Record<SupportedProviders, UserData>
+type Profile = ModelBase & Record<SupportedProviders, UserData | null | undefined>
 const ProfileConverter: FirestoreDataConverter<Profile> = {
   toFirestore: (data) => {
     return { ...data }
@@ -30,12 +31,10 @@ export const useProfile = () => {
   const [profile, setProfile] = React.useState<Profile | null>(null)
 
   const setUserData = React.useCallback(
-    (provider: SupportedProviders, data: UserData) => {
-      if (user) {
-        db.set(USER_DATA_PATH, user.uid, { [provider]: data })
-      }
+    (uid: string, provider: SupportedProviders, data: UserData) => {
+      db.set(USER_DATA_PATH, uid, { [provider]: data })
     },
-    [db, user]
+    [db]
   )
 
   const getUserData = React.useCallback(async () => {

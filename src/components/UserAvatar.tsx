@@ -9,11 +9,13 @@ import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
 
 import { useUser } from '../contexts/UserAuthorizationProvider'
-import { useLogin } from '../hooks/useLogin'
+import { supportedProviders, useLogin } from '../hooks/useLogin'
+import { useProfile } from '../hooks/useProfile'
 
 const UserAvatar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [user, auth] = useUser()
+  const [profile] = useProfile()
   const login = useLogin()
 
   const router = useRouter()
@@ -49,6 +51,14 @@ const UserAvatar = () => {
             <Typography>{user?.displayName}</Typography>
           </Stack>
         </ListItem>
+        {profile &&
+          supportedProviders.map((provider, i) => (
+            <ListItem key={provider} divider={i === supportedProviders.length - 1}>
+              <Typography>
+                {provider}: {profile[provider]?.name || 'Not linked'}
+              </Typography>
+            </ListItem>
+          ))}
         <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
       </Menu>
     </>

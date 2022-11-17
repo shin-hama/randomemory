@@ -2,10 +2,12 @@ import * as React from 'react'
 
 import { useUser } from '../../contexts/UserAuthorizationProvider'
 import { useRouter } from 'next/router'
+import { useProfile } from '../../hooks/useProfile'
 
 const TwitterCallback = () => {
   const [, auth] = useUser()
   const router = useRouter()
+  const [, { set: setProfile }] = useProfile()
 
   React.useEffect(() => {
     // After returning from the redirect when your app initializes you can obtain the result
@@ -15,7 +17,11 @@ const TwitterCallback = () => {
         if (result) {
           // This is the signed-in user
           const user = result.user
-          console.log(user)
+          setProfile(user.uid, 'twitter', {
+            name:
+              user.providerData.find((provider) => provider.providerId === 'twitter.com')
+                ?.displayName || 'No Name',
+          })
           const token = await user.getIdToken()
 
           if (token) {

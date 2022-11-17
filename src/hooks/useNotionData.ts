@@ -18,7 +18,6 @@ export const useNotionData = () => {
     const needUpdate =
       contents === null || (contents?.updatedAt && now - contents.updatedAt.getDate() !== 0)
 
-    console.log(user && needUpdate)
     if (user && needUpdate) {
       return INIT_NOTION_PATH
     } else {
